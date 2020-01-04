@@ -8,9 +8,9 @@
 ![Project Maintenance][maintenance-shield]
 [![GitHub Activity][commits-shield]][commits]
 
-[![Buy me a coffee][buymeacoffee-shield]][buymeacoffee]
+[![Sponsor Frenck via GitHub Sponsors][github-sponsors-shield]][github-sponsors]
 
-[![Support my work on Patreon][patreon-shield]][patreon]
+[![Support Frenck on Patreon][patreon-shield]][patreon]
 
 Asynchronous Python client for the Twente Milieu API.
 
@@ -150,16 +150,16 @@ SOFTWARE.
 
 [build-shield]: https://dev.azure.com/frenck/python-twentemilieu/_apis/build/status/frenck.python-twentemilieu?branchName=master
 [build]: https://dev.azure.com/frenck/python-twentemilieu/_build/latest?definitionId=2&branchName=master
-[buymeacoffee-shield]: https://www.buymeacoffee.com/assets/img/guidelines/download-assets-sm-2.svg
-[buymeacoffee]: https://www.buymeacoffee.com/frenck
 [commits-shield]: https://img.shields.io/github/commit-activity/y/frenck/python-twentemilieu.svg
 [commits]: https://github.com/frenck/python-twentemilieu/commits/master
 [contributors]: https://github.com/frenck/python-twentemilieu/graphs/contributors
 [frenck]: https://github.com/frenck
+[github-sponsors-shield]: https://frenck.dev/wp-content/uploads/2019/12/github_sponsor.png
+[github-sponsors]: https://github.com/sponsors/frenck
 [keepchangelog]: http://keepachangelog.com/en/1.0.0/
 [license-shield]: https://img.shields.io/github/license/frenck/python-twentemilieu.svg
 [maintenance-shield]: https://img.shields.io/maintenance/yes/2020.svg
-[patreon-shield]: https://www.frenck.nl/images/patreon.png
+[patreon-shield]: https://frenck.dev/wp-content/uploads/2019/12/patreon.png
 [patreon]: https://www.patreon.com/frenck
 [project-stage-shield]: https://img.shields.io/badge/project%20stage-experimental-yellow.svg
 [releases-shield]: https://img.shields.io/github/release/frenck/python-twentemilieu.svg
