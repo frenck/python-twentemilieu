@@ -2,11 +2,12 @@
 
 [![GitHub Release][releases-shield]][releases]
 ![Project Stage][project-stage-shield]
+![Project Maintenance][maintenance-shield]
 [![License][license-shield]](LICENSE.md)
 
 [![Build Status][build-shield]][build]
-![Project Maintenance][maintenance-shield]
-[![GitHub Activity][commits-shield]][commits]
+[![Code Coverage][codecov-shield]][codecov]
+[![Code Quality][code-quality-shield]][code-quality]
 
 [![Sponsor Frenck via GitHub Sponsors][github-sponsors-shield]][github-sponsors]
 
@@ -150,6 +151,10 @@ SOFTWARE.
 
 [build-shield]: https://dev.azure.com/frenck/python-twentemilieu/_apis/build/status/frenck.python-twentemilieu?branchName=master
 [build]: https://dev.azure.com/frenck/python-twentemilieu/_build/latest?definitionId=2&branchName=master
+[code-quality-shield]: https://img.shields.io/lgtm/grade/python/g/frenck/python-twentemilieu.svg?logo=lgtm&logoWidth=18
+[code-quality]: https://lgtm.com/projects/g/frenck/python-twentemilieu/context:python
+[codecov-shield]: https://codecov.io/gh/frenck/python-twentemilieu/branch/master/graph/badge.svg
+[codecov]: https://codecov.io/gh/frenck/python-twentemilieu
 [commits-shield]: https://img.shields.io/github/commit-activity/y/frenck/python-twentemilieu.svg
 [commits]: https://github.com/frenck/python-twentemilieu/commits/master
 [contributors]: https://github.com/frenck/python-twentemilieu/graphs/contributors
