@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Asynchronous Python client for the Twente Milieu API."""
+"""Asynchronous Python client for the WasteAPI."""
 import asyncio
 import json
 import socket
@@ -11,19 +11,16 @@ import async_timeout
 from yarl import URL
 
 from .__version__ import __version__
-from .const import API_BASE_URI, API_COMPANY_CODE, API_HOST, API_TO_WASTE_TYPE
-from .exceptions import (
-    TwenteMilieuAddressError,
-    TwenteMilieuConnectionError,
-    TwenteMilieuError,
-)
+from .const import API_BASE_URI, API_HOST, API_TO_WASTE_TYPE
+from .exceptions import WasteApiAddressError, WasteApiConnectionError, WasteApiError
 
 
-class TwenteMilieu:
-    """Main class for handling connections with Twente Milieu."""
+class WasteApi:
+    """Main class for handling connections with WasteAPI."""
 
     def __init__(
         self,
+        company_code: str,
         post_code: str,
         house_number: str,
         house_letter: str = None,
@@ -32,11 +29,12 @@ class TwenteMilieu:
         session=None,
         user_agent: str = None,
     ):
-        """Initialize connection with Twente Milieu."""
+        """Initialize connection with WasteAPI."""
         self._loop = loop
         self._session = session
         self._close_session = False
 
+        self.company_code = company_code
         self.post_code = post_code
         self.house_number = house_number
         self.house_letter = house_letter
@@ -55,10 +53,10 @@ class TwenteMilieu:
             self._close_session = True
 
         if self.user_agent is None:
-            self.user_agent = "PythonTwenteMilieu/{}".format(__version__)
+            self.user_agent = "PythonWasteAPI/{}".format(__version__)
 
     async def _request(self, uri: str, method: str = "POST", data=None):
-        """Handle a request to Twente Milieu."""
+        """Handle a request to WasteAPI."""
         url = URL.build(
             scheme="https", host=API_HOST, port=443, path=API_BASE_URI
         ).join(URL(uri))
@@ -74,12 +72,12 @@ class TwenteMilieu:
                     method, url, data=data, headers=headers, ssl=True
                 )
         except asyncio.TimeoutError as exception:
-            raise TwenteMilieuConnectionError(
-                "Timeout occurred while connecting to Twente Milieu API."
+            raise WasteApiConnectionError(
+                "Timeout occurred while connecting to WasteAPI."
             ) from exception
         except (aiohttp.ClientError, socket.gaierror) as exception:
-            raise TwenteMilieuConnectionError(
-                "Error occurred while communicating with Twente Milieu."
+            raise WasteApiConnectionError(
+                "Error occurred while communicating with WasteAPI."
             ) from exception
 
         content_type = response.headers.get("Content-Type", "")
@@ -88,12 +86,10 @@ class TwenteMilieu:
             response.close()
 
             if content_type == "application/json":
-                raise TwenteMilieuError(
+                raise WasteApiError(
                     response.status, json.loads(contents.decode("utf8"))
                 )
-            raise TwenteMilieuError(
-                response.status, {"message": contents.decode("utf8")}
-            )
+            raise WasteApiError(response.status, {"message": contents.decode("utf8")})
 
         if "application/json" in response.headers["Content-Type"]:
             return await response.json()
@@ -105,30 +101,29 @@ class TwenteMilieu:
             response = await self._request(
                 "FetchAdress",
                 data={
-                    "companyCode": API_COMPANY_CODE,
+                    "companyCode": self.company_code,
                     "postCode": self.post_code,
                     "houseNumber": self.house_number,
-                    "houseLetter": self.house_letter,
+                    "houseLetter": self.house_letter or "",
                 },
             )
             if not response.get("dataList"):
-                raise TwenteMilieuAddressError(
-                    "Address not found in Twente Milieu service area"
-                )
+                raise WasteApiAddressError("Address not found in WasteAPI service area")
             self._unique_id = response["dataList"][0]["UniqueId"]
         return self._unique_id
 
     async def update(self) -> None:
-        """Fetch data from Twente Milieu."""
+        """Fetch data from WasteAPI."""
         await self.unique_id()
 
+        today = datetime.now().date()
         response = await self._request(
             "GetCalendar",
             data={
-                "companyCode": API_COMPANY_CODE,
+                "companyCode": self.company_code,
                 "uniqueAddressID": self._unique_id,
-                "startDate": datetime.today(),
-                "endDate": datetime.today() + timedelta(days=100),
+                "startDate": today.isoformat(),
+                "endDate": (today + timedelta(days=100)).isoformat(),
             },
         )
 
@@ -150,7 +145,7 @@ class TwenteMilieu:
         if self._close_session:
             await self._session.close()
 
-    async def __aenter__(self) -> "TwenteMilieu":
+    async def __aenter__(self) -> "WasteApi":
         """Async enter."""
         return self
 

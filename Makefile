@@ -18,7 +18,7 @@ BROWSER := python -c "$$BROWSER_PYSCRIPT"
 
 .PHONY: help
 help: ## Shows this message.
-	@echo "Asynchronous Python client for Twente Milieu."; \
+	@echo "Asynchronous Python client for WasteAPI."; \
 	echo; \
 	echo "Usage:"; \
 	awk -F ':|##' '/^[^\t].+?:.*?##/ {\
@@ -36,24 +36,24 @@ lint: lint-black lint-flake8 lint-pylint lint-mypy ## Run all linters.
 
 .PHONY: lint-black
 lint-black: ## Run linting using black & blacken-docs.
-	black --safe --target-version py35 twentemilieu tests examples; \
+	black --safe --target-version py35 wasteapi tests examples; \
 	blacken-docs --target-version py35
 
 .PHONY: lint-flake8
 lint-flake8: ## Run linting using flake8 (pycodestyle/pydocstyle).
-	flake8 twentemilieu
+	flake8 wasteapi
 
 .PHONY: lint-pylint
 lint-pylint: ## Run linting using PyLint.
-	pylint twentemilieu
+	pylint wasteapi
 
 .PHONY: lint-mypy
 lint-mypy: ## Run linting using MyPy.
-	mypy -p twentemilieu
+	mypy -p wasteapi
 
 .PHONY: test
 test: ## Run tests quickly with the default Python.
-	pytest --cov-report html --cov-report term --cov=twentemilieu .;
+	pytest --cov-report html --cov-report term --cov=wasteapi .;
 
 .PHONY: coverage
 coverage: test ## Check code coverage quickly with the default Python.

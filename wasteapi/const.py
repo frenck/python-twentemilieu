@@ -1,0 +1,22 @@
+# -*- coding: utf-8 -*-
+"""WasteApi constants."""
+
+API_HOST = "wasteapi.2go-mobile.com"
+API_BASE_URI = "/api/"
+
+WASTE_TYPE_NON_RECYCLABLE = "Non-recyclable"
+WASTE_TYPE_ORGANIC = "Organic"
+WASTE_TYPE_PAPER = "Paper"
+WASTE_TYPE_PLASTIC = "Plastic"
+
+API_TO_WASTE_TYPE = {
+    "GREEN": WASTE_TYPE_ORGANIC,
+    "GREY": WASTE_TYPE_NON_RECYCLABLE,
+    "PACKAGES": WASTE_TYPE_PLASTIC,  # Twente milieu uses 'PACKAGES' for plastic
+    "PAPER": WASTE_TYPE_PAPER,
+    "PLASTIC": WASTE_TYPE_PLASTIC,  # Area reiniging uses 'PLASTIC' for plastic
+}
+
+COMPANY_CODE_AREA_REINIGING = "adc418da-d19b-11e5-ab30-625662870761"
+COMPANY_CODE_GEMEENTE_HELLENDOORN = "24434f5b-7244-412b-9306-3a2bd1e22bc1"
+COMPANY_CODE_TWENTEMILIEU = "8d97bb56-5afd-4cbc-a651-b4f7314264b4"

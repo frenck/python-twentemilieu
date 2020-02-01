@@ -12,7 +12,7 @@ from setuptools import find_packages, setup
 def get_version():
     """Get current version from code."""
     regex = r"__version__\s=\s\"(?P<version>[\d\.]+?)\""
-    path = ("twentemilieu", "__version__.py")
+    path = ("wasteapi", "__version__.py")
     return re.search(regex, read(*path)).group("version")
 
 
@@ -49,7 +49,7 @@ setup(
     long_description_content_type="text/markdown",
     long_description=readme,
     name="twentemilieu",
-    packages=find_packages(include=["twentemilieu"]),
+    packages=find_packages(include=["wasteapi"]),
     test_suite="tests",
     url="https://github.com/frenck/python-twentemilieu",
     version=get_version(),

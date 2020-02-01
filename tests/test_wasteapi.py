@@ -1,25 +1,26 @@
 # -*- coding: utf-8 -*-
-"""Tests for `twentemilieu.twentemilieu`."""
+"""Tests for `wasteapi.wasteapi`."""
 import asyncio
 import json
 from datetime import datetime
 
 import aiohttp
 import pytest
-from twentemilieu import TwenteMilieu
-from twentemilieu.__version__ import __version__
-from twentemilieu.const import (
+from wasteapi import WasteApi
+from wasteapi.__version__ import __version__
+from wasteapi.const import (
     API_BASE_URI,
     API_HOST,
+    COMPANY_CODE_TWENTEMILIEU,
     WASTE_TYPE_NON_RECYCLABLE,
     WASTE_TYPE_ORGANIC,
     WASTE_TYPE_PAPER,
     WASTE_TYPE_PLASTIC,
 )
-from twentemilieu.exceptions import (
-    TwenteMilieuAddressError,
-    TwenteMilieuConnectionError,
-    TwenteMilieuError,
+from wasteapi.exceptions import (
+    WasteApiAddressError,
+    WasteApiConnectionError,
+    WasteApiError,
 )
 
 
@@ -37,10 +38,14 @@ async def test_json_request(event_loop, aresponses):
         ),
     )
     async with aiohttp.ClientSession(loop=event_loop) as session:
-        tw = TwenteMilieu(
-            post_code="1234AB", house_number=1, session=session, loop=event_loop
+        wa = WasteApi(
+            company_code=COMPANY_CODE_TWENTEMILIEU,
+            post_code="1234AB",
+            house_number="1",
+            session=session,
+            loop=event_loop,
         )
-        response = await tw._request("")
+        response = await wa._request("")
         assert response["status"] == "ok"
 
 
@@ -51,10 +56,14 @@ async def test_text_request(event_loop, aresponses):
         API_HOST, API_BASE_URI, "POST", aresponses.Response(status=200, text="OK")
     )
     async with aiohttp.ClientSession(loop=event_loop) as session:
-        tw = TwenteMilieu(
-            post_code="1234AB", house_number=1, session=session, loop=event_loop
+        wa = WasteApi(
+            company_code=COMPANY_CODE_TWENTEMILIEU,
+            post_code="1234AB",
+            house_number="1",
+            session=session,
+            loop=event_loop,
         )
-        response = await tw._request("")
+        response = await wa._request("")
         assert response == "OK"
 
 
@@ -71,8 +80,13 @@ async def test_internal_session(event_loop, aresponses):
             text='{"status": "ok"}',
         ),
     )
-    async with TwenteMilieu(post_code="1234AB", house_number=1, loop=event_loop) as tw:
-        response = await tw._request("")
+    async with WasteApi(
+        company_code=COMPANY_CODE_TWENTEMILIEU,
+        post_code="1234AB",
+        house_number="1",
+        loop=event_loop,
+    ) as wa:
+        response = await wa._request("")
         assert response["status"] == "ok"
 
 
@@ -89,8 +103,10 @@ async def test_internal_eventloop(aresponses):
             text='{"status": "ok"}',
         ),
     )
-    async with TwenteMilieu(post_code="1234AB", house_number=1) as tw:
-        response = await tw._request("")
+    async with WasteApi(
+        company_code=COMPANY_CODE_TWENTEMILIEU, post_code="1234AB", house_number="1"
+    ) as wa:
+        response = await wa._request("")
         assert response["status"] == "ok"
 
 
@@ -99,18 +115,20 @@ async def test_request_user_agent(event_loop, aresponses):
     """Test if client is sending correct user agent headers."""
     # Handle to run asserts on request in
     async def response_handler(request):
-        assert request.headers["User-Agent"] == "PythonTwenteMilieu/{}".format(
-            __version__
-        )
+        assert request.headers["User-Agent"] == "PythonWasteAPI/{}".format(__version__)
         return aresponses.Response(text="TEDDYBEAR", status=200)
 
     aresponses.add(API_HOST, API_BASE_URI, "POST", response_handler)
 
     async with aiohttp.ClientSession(loop=event_loop) as session:
-        tw = TwenteMilieu(
-            post_code="1234AB", house_number=1, session=session, loop=event_loop
+        wa = WasteApi(
+            company_code=COMPANY_CODE_TWENTEMILIEU,
+            post_code="1234AB",
+            house_number="1",
+            session=session,
+            loop=event_loop,
         )
-        await tw._request("")
+        await wa._request("")
 
 
 @pytest.mark.asyncio
@@ -124,19 +142,20 @@ async def test_request_custom_user_agent(event_loop, aresponses):
     aresponses.add(API_HOST, API_BASE_URI, "POST", response_handler)
 
     async with aiohttp.ClientSession(loop=event_loop) as session:
-        tw = TwenteMilieu(
+        wa = WasteApi(
+            company_code=COMPANY_CODE_TWENTEMILIEU,
             post_code="1234AB",
-            house_number=1,
+            house_number="1",
             session=session,
             loop=event_loop,
             user_agent="LoremIpsum/1.0",
         )
-        await tw._request("")
+        await wa._request("")
 
 
 @pytest.mark.asyncio
 async def test_timeout(event_loop, aresponses):
-    """Test request timeout from Twente Milieu."""
+    """Test request timeout from WasteAPI."""
     # Faking a timeout by sleeping
     async def response_handler(_):
         await asyncio.sleep(2)
@@ -145,15 +164,16 @@ async def test_timeout(event_loop, aresponses):
     aresponses.add(API_HOST, API_BASE_URI, "POST", response_handler)
 
     async with aiohttp.ClientSession(loop=event_loop) as session:
-        tw = TwenteMilieu(
+        wa = WasteApi(
+            company_code=COMPANY_CODE_TWENTEMILIEU,
             post_code="1234AB",
-            house_number=1,
+            house_number="1",
             session=session,
             loop=event_loop,
             request_timeout=1,
         )
-        with pytest.raises(TwenteMilieuConnectionError):
-            assert await tw._request("")
+        with pytest.raises(WasteApiConnectionError):
+            assert await wa._request("")
 
 
 @pytest.mark.asyncio
@@ -167,11 +187,15 @@ async def test_http_error400(event_loop, aresponses):
     )
 
     async with aiohttp.ClientSession(loop=event_loop) as session:
-        tw = TwenteMilieu(
-            post_code="1234AB", house_number=1, session=session, loop=event_loop
+        wa = WasteApi(
+            company_code=COMPANY_CODE_TWENTEMILIEU,
+            post_code="1234AB",
+            house_number="1",
+            session=session,
+            loop=event_loop,
         )
-        with pytest.raises(TwenteMilieuError):
-            assert await tw._request("")
+        with pytest.raises(WasteApiError):
+            assert await wa._request("")
 
 
 @pytest.mark.asyncio
@@ -189,11 +213,15 @@ async def test_http_error500(event_loop, aresponses):
     )
 
     async with aiohttp.ClientSession(loop=event_loop) as session:
-        tw = TwenteMilieu(
-            post_code="1234AB", house_number=1, session=session, loop=event_loop
+        wa = WasteApi(
+            company_code=COMPANY_CODE_TWENTEMILIEU,
+            post_code="1234AB",
+            house_number="1",
+            session=session,
+            loop=event_loop,
         )
-        with pytest.raises(TwenteMilieuError):
-            assert await tw._request("")
+        with pytest.raises(WasteApiError):
+            assert await wa._request("")
 
 
 @pytest.mark.asyncio
@@ -210,10 +238,14 @@ async def test_unique_id(event_loop, aresponses):
         ),
     )
     async with aiohttp.ClientSession(loop=event_loop) as session:
-        tw = TwenteMilieu(
-            post_code="1234AB", house_number=1, session=session, loop=event_loop
+        wa = WasteApi(
+            company_code=COMPANY_CODE_TWENTEMILIEU,
+            post_code="1234AB",
+            house_number="1",
+            session=session,
+            loop=event_loop,
         )
-        unique_id = await tw.unique_id()
+        unique_id = await wa.unique_id()
         assert unique_id == "12345"
 
 
@@ -231,16 +263,20 @@ async def test_invalid_address(event_loop, aresponses):
         ),
     )
     async with aiohttp.ClientSession(loop=event_loop) as session:
-        tw = TwenteMilieu(
-            post_code="1234AB", house_number=1, session=session, loop=event_loop
+        wa = WasteApi(
+            company_code=COMPANY_CODE_TWENTEMILIEU,
+            post_code="1234AB",
+            house_number="1",
+            session=session,
+            loop=event_loop,
         )
-        with pytest.raises(TwenteMilieuAddressError):
-            assert await tw.unique_id()
+        with pytest.raises(WasteApiAddressError):
+            assert await wa.unique_id()
 
 
 @pytest.mark.asyncio
 async def test_update(event_loop, aresponses):
-    """Test request for updating data from Twente Milieu."""
+    """Test request for updating data from WasteAPI."""
     aresponses.add(
         API_HOST,
         "{}FetchAdress".format(API_BASE_URI),
@@ -284,15 +320,19 @@ async def test_update(event_loop, aresponses):
     )
 
     async with aiohttp.ClientSession(loop=event_loop) as session:
-        tw = TwenteMilieu(
-            post_code="1234AB", house_number=1, session=session, loop=event_loop
+        wa = WasteApi(
+            company_code=COMPANY_CODE_TWENTEMILIEU,
+            post_code="1234AB",
+            house_number="1",
+            session=session,
+            loop=event_loop,
         )
-        await tw.update()
-        pickup = await tw.next_pickup(WASTE_TYPE_NON_RECYCLABLE)
+        await wa.update()
+        pickup = await wa.next_pickup(WASTE_TYPE_NON_RECYCLABLE)
         assert pickup == datetime(2019, 7, 21, 0, 0)
-        pickup = await tw.next_pickup(WASTE_TYPE_ORGANIC)
+        pickup = await wa.next_pickup(WASTE_TYPE_ORGANIC)
         assert pickup == datetime(2019, 7, 19, 0, 0)
-        pickup = await tw.next_pickup(WASTE_TYPE_PAPER)
+        pickup = await wa.next_pickup(WASTE_TYPE_PAPER)
         assert pickup == datetime(2019, 7, 22, 0, 0)
-        pickup = await tw.next_pickup(WASTE_TYPE_PLASTIC)
+        pickup = await wa.next_pickup(WASTE_TYPE_PLASTIC)
         assert pickup is None
