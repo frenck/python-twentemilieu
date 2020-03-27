@@ -128,7 +128,9 @@ class TwenteMilieu:
                 "companyCode": API_COMPANY_CODE,
                 "uniqueAddressID": self._unique_id,
                 "startDate": datetime.today().strftime("%Y-%m-%d"),
-                "endDate": (datetime.today() + timedelta(days=100)).strftime("%Y-%m-%d"),
+                "endDate": (datetime.today() + timedelta(days=100)).strftime(
+                    "%Y-%m-%d"
+                ),
             },
         )
 
