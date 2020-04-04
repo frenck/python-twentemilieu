@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Twente Milieu constants."""
 
-API_HOST = "wasteapi.2go-mobile.com"
+API_HOST = "twentemilieuapi.ximmio.com"
 API_BASE_URI = "/api/"
 API_COMPANY_CODE = "8d97bb56-5afd-4cbc-a651-b4f7314264b4"
 
