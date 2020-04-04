@@ -71,7 +71,7 @@ class TwenteMilieu:
         try:
             with async_timeout.timeout(self.request_timeout):
                 response = await self._session.request(
-                    method, url, data=data, headers=headers, ssl=True
+                    method, url, json=data, headers=headers, ssl=True
                 )
         except asyncio.TimeoutError as exception:
             raise TwenteMilieuConnectionError(
@@ -127,8 +127,10 @@ class TwenteMilieu:
             data={
                 "companyCode": API_COMPANY_CODE,
                 "uniqueAddressID": self._unique_id,
-                "startDate": datetime.today(),
-                "endDate": datetime.today() + timedelta(days=100),
+                "startDate": datetime.today().strftime("%Y-%m-%d"),
+                "endDate": (datetime.today() + timedelta(days=100)).strftime(
+                    "%Y-%m-%d"
+                ),
             },
         )
 
