@@ -1,21 +1,21 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=W0621
-"""Asynchronous Python client for the Twente Milieu API."""
+"""Asynchronous Python client for the Meppel Afvalkalender API."""
 
 import asyncio
 
-from twentemilieu import (
+from meppel_afvalkalender import (
     WASTE_TYPE_NON_RECYCLABLE,
     WASTE_TYPE_ORGANIC,
     WASTE_TYPE_PAPER,
     WASTE_TYPE_PLASTIC,
-    TwenteMilieu,
+    MeppelAfvalkalender,
 )
 
 
 async def main(loop):
-    """Show example on stats from Twente Milieu."""
-    async with TwenteMilieu(post_code="7545KR", house_number=175, loop=loop) as tw:
+    """Show example on stats from Meppel Afvalkalender."""
+    async with MeppelAfvalkalender(post_code="7944NS", house_number=1, loop=loop) as tw:
         print(tw)
         unique_id = await tw.unique_id()
         print("Unique Address ID:", unique_id)

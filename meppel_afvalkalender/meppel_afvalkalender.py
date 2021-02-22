@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Asynchronous Python client for the Twente Milieu API."""
+"""Asynchronous Python client for the Meppel Afvalkalender API."""
 import asyncio
 import json
 import socket
@@ -13,14 +13,14 @@ from yarl import URL
 from .__version__ import __version__
 from .const import API_BASE_URI, API_COMPANY_CODE, API_HOST, API_TO_WASTE_TYPE
 from .exceptions import (
-    TwenteMilieuAddressError,
-    TwenteMilieuConnectionError,
-    TwenteMilieuError,
+    MeppelAfvalkalenderAddressError,
+    MeppelAfvalkalenderConnectionError,
+    MeppelAfvalkalenderError,
 )
 
 
-class TwenteMilieu:
-    """Main class for handling connections with Twente Milieu."""
+class MeppelAfvalkalender:
+    """Main class for handling connections with Meppel Afvalkalender."""
 
     def __init__(
         self,
@@ -32,7 +32,7 @@ class TwenteMilieu:
         session=None,
         user_agent: str = None,
     ):
-        """Initialize connection with Twente Milieu."""
+        """Initialize connection with Meppel Afvalkalender."""
         self._loop = loop
         self._session = session
         self._close_session = False
@@ -55,10 +55,10 @@ class TwenteMilieu:
             self._close_session = True
 
         if self.user_agent is None:
-            self.user_agent = "PythonTwenteMilieu/{}".format(__version__)
+            self.user_agent = "PythonMeppelAfvalkalender/{}".format(__version__)
 
     async def _request(self, uri: str, method: str = "POST", data=None):
-        """Handle a request to Twente Milieu."""
+        """Handle a request to Meppel Afvalkalender."""
         url = URL.build(
             scheme="https", host=API_HOST, port=443, path=API_BASE_URI
         ).join(URL(uri))
@@ -74,12 +74,12 @@ class TwenteMilieu:
                     method, url, json=data, headers=headers, ssl=True
                 )
         except asyncio.TimeoutError as exception:
-            raise TwenteMilieuConnectionError(
-                "Timeout occurred while connecting to Twente Milieu API."
+            raise MeppelAfvalkalenderConnectionError(
+                "Timeout occurred while connecting to Meppel Afvalkalender API."
             ) from exception
         except (aiohttp.ClientError, socket.gaierror) as exception:
-            raise TwenteMilieuConnectionError(
-                "Error occurred while communicating with Twente Milieu."
+            raise MeppelAfvalkalenderConnectionError(
+                "Error occurred while communicating with Meppel Afvalkalender."
             ) from exception
 
         content_type = response.headers.get("Content-Type", "")
@@ -88,10 +88,10 @@ class TwenteMilieu:
             response.close()
 
             if content_type == "application/json":
-                raise TwenteMilieuError(
+                raise MeppelAfvalkalenderError(
                     response.status, json.loads(contents.decode("utf8"))
                 )
-            raise TwenteMilieuError(
+            raise MeppelAfvalkalenderError(
                 response.status, {"message": contents.decode("utf8")}
             )
 
@@ -112,14 +112,14 @@ class TwenteMilieu:
                 },
             )
             if not response.get("dataList"):
-                raise TwenteMilieuAddressError(
-                    "Address not found in Twente Milieu service area"
+                raise MeppelAfvalkalenderAddressError(
+                    "Address not found in Meppel Afvalkalender service area"
                 )
             self._unique_id = response["dataList"][0]["UniqueId"]
         return self._unique_id
 
     async def update(self) -> None:
-        """Fetch data from Twente Milieu."""
+        """Fetch data from Meppel Afvalkalender."""
         await self.unique_id()
 
         response = await self._request(
@@ -152,7 +152,7 @@ class TwenteMilieu:
         if self._close_session:
             await self._session.close()
 
-    async def __aenter__(self) -> "TwenteMilieu":
+    async def __aenter__(self) -> "MeppelAfvalkalender":
         """Async enter."""
         return self
 

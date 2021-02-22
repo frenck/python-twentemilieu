@@ -12,7 +12,7 @@ from setuptools import find_packages, setup
 def get_version():
     """Get current version from code."""
     regex = r"__version__\s=\s\"(?P<version>[\d\.]+?)\""
-    path = ("twentemilieu", "__version__.py")
+    path = ("meppel_afvalkalender", "__version__.py")
     return re.search(regex, read(*path)).group("version")
 
 
@@ -29,7 +29,6 @@ with open("README.md") as readme_file:
 
 setup(
     author="Franck Nijhof",
-    author_email="opensource@frenck.dev",
     classifiers=[
         "Development Status :: 4 - Beta",
         "Framework :: AsyncIO",
@@ -41,17 +40,17 @@ setup(
         "Programming Language :: Python :: 3",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
-    description="Asynchronous Python client for Twente Milieu API.",
+    description="Asynchronous Python client for Meppel Afvalkalender API.",
     include_package_data=True,
     install_requires=["aiohttp>=3.0.0", "yarl"],
-    keywords=["twente milieu", "afvalkalender", "api", "async", "client"],
+    keywords=["meppel afvalkalender", "afvalkalender", "api", "async", "client"],
     license="MIT license",
     long_description_content_type="text/markdown",
     long_description=readme,
-    name="twentemilieu",
-    packages=find_packages(include=["twentemilieu"]),
+    name="meppel_afvalkalender",
+    packages=find_packages(include=["meppel_afvalkalender"]),
     test_suite="tests",
-    url="https://github.com/frenck/python-twentemilieu",
+    url="https://github.com/frenck/python-meppel-afvalkalender",
     version=get_version(),
     zip_safe=False,
 )

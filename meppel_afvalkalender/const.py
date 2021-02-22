@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-"""Twente Milieu constants."""
+"""Meppel Afvalkalender constants."""
 
-API_HOST = "twentemilieuapi.ximmio.com"
+API_HOST = "wasteapi.ximmio.com"
 API_BASE_URI = "/api/"
-API_COMPANY_CODE = "8d97bb56-5afd-4cbc-a651-b4f7314264b4"
+API_COMPANY_CODE = "b7a594c7-2490-4413-88f9-94749a3ec62a"
 
 WASTE_TYPE_NON_RECYCLABLE = "Non-recyclable"
 WASTE_TYPE_ORGANIC = "Organic"
