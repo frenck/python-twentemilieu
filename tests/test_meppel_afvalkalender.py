@@ -71,7 +71,9 @@ async def test_internal_session(event_loop, aresponses):
             text='{"status": "ok"}',
         ),
     )
-    async with MeppelAfvalkalender(post_code="1234AB", house_number=1, loop=event_loop) as tw:
+    async with MeppelAfvalkalender(
+        post_code="1234AB", house_number=1, loop=event_loop
+    ) as tw:
         response = await tw._request("")
         assert response["status"] == "ok"
 
