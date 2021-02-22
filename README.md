@@ -6,8 +6,6 @@
 [![License][license-shield]](LICENSE.md)
 
 [![Build Status][build-shield]][build]
-[![Code Coverage][codecov-shield]][codecov]
-[![Code Quality][code-quality-shield]][code-quality]
 
 Asynchronous Python client for the Meppel Afvalkalender API.
 
@@ -32,7 +30,7 @@ pip install meppelafvalkalender
 ```python
 import asyncio
 
-from meppelafvalkalender import MeppelAfvalkalender, WASTE_TYPE_NON_RECYCLABLE
+from meppel_afvalkalender import MeppelAfvalkalender, WASTE_TYPE_NON_RECYCLABLE
 
 
 async def main(loop):
