@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
-"""Tests for `twentemilieu.twentemilieu`."""
+"""Tests for `meppel_afvalkalender.meppel_afvalkalender`."""
 import asyncio
 import json
 from datetime import datetime
 
 import aiohttp
 import pytest
-from twentemilieu import TwenteMilieu
-from twentemilieu.__version__ import __version__
-from twentemilieu.const import (
+from meppel_afvalkalender import MeppelAfvalkalender
+from meppel_afvalkalender.__version__ import __version__
+from meppel_afvalkalender.const import (
     API_BASE_URI,
     API_HOST,
     WASTE_TYPE_NON_RECYCLABLE,
@@ -16,10 +16,10 @@ from twentemilieu.const import (
     WASTE_TYPE_PAPER,
     WASTE_TYPE_PLASTIC,
 )
-from twentemilieu.exceptions import (
-    TwenteMilieuAddressError,
-    TwenteMilieuConnectionError,
-    TwenteMilieuError,
+from meppel_afvalkalender.exceptions import (
+    MeppelAfvalkalenderAddressError,
+    MeppelAfvalkalenderConnectionError,
+    MeppelAfvalkalenderError,
 )
 
 
@@ -37,7 +37,7 @@ async def test_json_request(event_loop, aresponses):
         ),
     )
     async with aiohttp.ClientSession(loop=event_loop) as session:
-        tw = TwenteMilieu(
+        tw = MeppelAfvalkalender(
             post_code="1234AB", house_number=1, session=session, loop=event_loop
         )
         response = await tw._request("")
@@ -51,7 +51,7 @@ async def test_text_request(event_loop, aresponses):
         API_HOST, API_BASE_URI, "POST", aresponses.Response(status=200, text="OK")
     )
     async with aiohttp.ClientSession(loop=event_loop) as session:
-        tw = TwenteMilieu(
+        tw = MeppelAfvalkalender(
             post_code="1234AB", house_number=1, session=session, loop=event_loop
         )
         response = await tw._request("")
@@ -71,7 +71,7 @@ async def test_internal_session(event_loop, aresponses):
             text='{"status": "ok"}',
         ),
     )
-    async with TwenteMilieu(post_code="1234AB", house_number=1, loop=event_loop) as tw:
+    async with MeppelAfvalkalender(post_code="1234AB", house_number=1, loop=event_loop) as tw:
         response = await tw._request("")
         assert response["status"] == "ok"
 
@@ -89,7 +89,7 @@ async def test_internal_eventloop(aresponses):
             text='{"status": "ok"}',
         ),
     )
-    async with TwenteMilieu(post_code="1234AB", house_number=1) as tw:
+    async with MeppelAfvalkalender(post_code="1234AB", house_number=1) as tw:
         response = await tw._request("")
         assert response["status"] == "ok"
 
@@ -99,7 +99,7 @@ async def test_request_user_agent(event_loop, aresponses):
     """Test if client is sending correct user agent headers."""
     # Handle to run asserts on request in
     async def response_handler(request):
-        assert request.headers["User-Agent"] == "PythonTwenteMilieu/{}".format(
+        assert request.headers["User-Agent"] == "PythonMeppelAfvalkalender/{}".format(
             __version__
         )
         return aresponses.Response(text="TEDDYBEAR", status=200)
@@ -107,7 +107,7 @@ async def test_request_user_agent(event_loop, aresponses):
     aresponses.add(API_HOST, API_BASE_URI, "POST", response_handler)
 
     async with aiohttp.ClientSession(loop=event_loop) as session:
-        tw = TwenteMilieu(
+        tw = MeppelAfvalkalender(
             post_code="1234AB", house_number=1, session=session, loop=event_loop
         )
         await tw._request("")
@@ -124,7 +124,7 @@ async def test_request_custom_user_agent(event_loop, aresponses):
     aresponses.add(API_HOST, API_BASE_URI, "POST", response_handler)
 
     async with aiohttp.ClientSession(loop=event_loop) as session:
-        tw = TwenteMilieu(
+        tw = MeppelAfvalkalender(
             post_code="1234AB",
             house_number=1,
             session=session,
@@ -136,7 +136,7 @@ async def test_request_custom_user_agent(event_loop, aresponses):
 
 @pytest.mark.asyncio
 async def test_timeout(event_loop, aresponses):
-    """Test request timeout from Twente Milieu."""
+    """Test request timeout from Meppel Afvalkalender."""
     # Faking a timeout by sleeping
     async def response_handler(_):
         await asyncio.sleep(2)
@@ -145,14 +145,14 @@ async def test_timeout(event_loop, aresponses):
     aresponses.add(API_HOST, API_BASE_URI, "POST", response_handler)
 
     async with aiohttp.ClientSession(loop=event_loop) as session:
-        tw = TwenteMilieu(
+        tw = MeppelAfvalkalender(
             post_code="1234AB",
             house_number=1,
             session=session,
             loop=event_loop,
             request_timeout=1,
         )
-        with pytest.raises(TwenteMilieuConnectionError):
+        with pytest.raises(MeppelAfvalkalenderConnectionError):
             assert await tw._request("")
 
 
@@ -167,10 +167,10 @@ async def test_http_error400(event_loop, aresponses):
     )
 
     async with aiohttp.ClientSession(loop=event_loop) as session:
-        tw = TwenteMilieu(
+        tw = MeppelAfvalkalender(
             post_code="1234AB", house_number=1, session=session, loop=event_loop
         )
-        with pytest.raises(TwenteMilieuError):
+        with pytest.raises(MeppelAfvalkalenderError):
             assert await tw._request("")
 
 
@@ -189,10 +189,10 @@ async def test_http_error500(event_loop, aresponses):
     )
 
     async with aiohttp.ClientSession(loop=event_loop) as session:
-        tw = TwenteMilieu(
+        tw = MeppelAfvalkalender(
             post_code="1234AB", house_number=1, session=session, loop=event_loop
         )
-        with pytest.raises(TwenteMilieuError):
+        with pytest.raises(MeppelAfvalkalenderError):
             assert await tw._request("")
 
 
@@ -210,7 +210,7 @@ async def test_unique_id(event_loop, aresponses):
         ),
     )
     async with aiohttp.ClientSession(loop=event_loop) as session:
-        tw = TwenteMilieu(
+        tw = MeppelAfvalkalender(
             post_code="1234AB", house_number=1, session=session, loop=event_loop
         )
         unique_id = await tw.unique_id()
@@ -231,16 +231,16 @@ async def test_invalid_address(event_loop, aresponses):
         ),
     )
     async with aiohttp.ClientSession(loop=event_loop) as session:
-        tw = TwenteMilieu(
+        tw = MeppelAfvalkalender(
             post_code="1234AB", house_number=1, session=session, loop=event_loop
         )
-        with pytest.raises(TwenteMilieuAddressError):
+        with pytest.raises(MeppelAfvalkalenderAddressError):
             assert await tw.unique_id()
 
 
 @pytest.mark.asyncio
 async def test_update(event_loop, aresponses):
-    """Test request for updating data from Twente Milieu."""
+    """Test request for updating data from Meppel Afvalkalender."""
     aresponses.add(
         API_HOST,
         "{}FetchAdress".format(API_BASE_URI),
@@ -284,7 +284,7 @@ async def test_update(event_loop, aresponses):
     )
 
     async with aiohttp.ClientSession(loop=event_loop) as session:
-        tw = TwenteMilieu(
+        tw = MeppelAfvalkalender(
             post_code="1234AB", house_number=1, session=session, loop=event_loop
         )
         await tw.update()

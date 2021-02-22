@@ -1,4 +1,4 @@
 include README.md
 include LICENSE.md
-graft twentemilieu
+graft meppel_afvalkalender
 recursive-exclude * *.py[co]

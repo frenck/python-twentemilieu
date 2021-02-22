@@ -1,4 +1,4 @@
-# Python: Twente Milieu
+# Python: Meppel Afvalkalender
 
 [![GitHub Release][releases-shield]][releases]
 ![Project Stage][project-stage-shield]
@@ -9,15 +9,11 @@
 [![Code Coverage][codecov-shield]][codecov]
 [![Code Quality][code-quality-shield]][code-quality]
 
-[![Sponsor Frenck via GitHub Sponsors][github-sponsors-shield]][github-sponsors]
-
-[![Support Frenck on Patreon][patreon-shield]][patreon]
-
-Asynchronous Python client for the Twente Milieu API.
+Asynchronous Python client for the Meppel Afvalkalender API.
 
 ## About
 
-This package allows you to request waste pickup days from Twente Milieu
+This package allows you to request waste pickup days from Meppel Afvalkalender
 programmatically. It is mainly created to allow third-party programs to use
 or respond to this data.
 
@@ -28,7 +24,7 @@ trash pickup day.
 ## Installation
 
 ```bash
-pip install twentemilieu
+pip install meppelafvalkalender
 ```
 
 ## Usage
@@ -36,12 +32,12 @@ pip install twentemilieu
 ```python
 import asyncio
 
-from twentemilieu import TwenteMilieu, WASTE_TYPE_NON_RECYCLABLE
+from meppelafvalkalender import MeppelAfvalkalender, WASTE_TYPE_NON_RECYCLABLE
 
 
 async def main(loop):
-    """Show example on stats from Twente Milieu."""
-    async with TwenteMilieu(post_code="1234AB", house_number=1, loop=loop) as tw:
+    """Show example on stats from Meppel Afvalkalender."""
+    async with MeppelAfvalkalender(post_code="1234AB", house_number=1, loop=loop) as tw:
         unique_id = await tw.unique_id()
         print("Unique Address ID:", unique_id)
         await tw.update()
@@ -94,7 +90,7 @@ of all make goals that are available (including description):
 
 ```bash
 $ make
-Asynchronous Python client for Twente Milieu.
+Asynchronous Python client for Meppel Afvalkalender.
 
 Usage:
   make help                            Shows this message.
@@ -121,6 +117,7 @@ Usage:
 ## Authors & contributors
 
 The original setup of this repository is by [Franck Nijhof][frenck].
+The Meppel Afvalkalender version is by [Westenberg][westenberg].
 
 For a full list of all authors and contributors,
 check [the contributor's page][contributors].
@@ -149,24 +146,19 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-[build-shield]: https://github.com/frenck/python-twentemilieu/workflows/Continuous%20Integration/badge.svg
-[build]: https://github.com/frenck/python-twentemilieu/actions
-[code-quality-shield]: https://img.shields.io/lgtm/grade/python/g/frenck/python-twentemilieu.svg?logo=lgtm&logoWidth=18
-[code-quality]: https://lgtm.com/projects/g/frenck/python-twentemilieu/context:python
-[codecov-shield]: https://codecov.io/gh/frenck/python-twentemilieu/branch/master/graph/badge.svg
-[codecov]: https://codecov.io/gh/frenck/python-twentemilieu
-[commits-shield]: https://img.shields.io/github/commit-activity/y/frenck/python-twentemilieu.svg
-[commits]: https://github.com/frenck/python-twentemilieu/commits/master
-[contributors]: https://github.com/frenck/python-twentemilieu/graphs/contributors
-[frenck]: https://github.com/frenck
-[github-sponsors-shield]: https://frenck.dev/wp-content/uploads/2019/12/github_sponsor.png
-[github-sponsors]: https://github.com/sponsors/frenck
+[build-shield]: https://github.com/westenberg/python-meppel-afvalkalender/workflows/Continuous%20Integration/badge.svg
+[build]: https://github.com/westenberg/python-meppel-afvalkalender/actions
+[code-quality-shield]: https://img.shields.io/lgtm/grade/python/g/westenberg/python-meppel-afvalkalender.svg?logo=lgtm&logoWidth=18
+[codecov-shield]: https://codecov.io/gh/westenberg/python-meppel-afvalkalender/branch/master/graph/badge.svg
+[codecov]: https://codecov.io/gh/westenberg/python-meppel-afvalkalender
+[commits-shield]: https://img.shields.io/github/commit-activity/y/westenberg/python-meppel-afvalkalender.svg
+[commits]: https://github.com/westenberg/python-meppel-afvalkalender/commits/master
+[contributors]: https://github.com/westenberg/python-meppel-afvalkalender/graphs/contributors
+[westenberg]: https://github.com/westenberg
 [keepchangelog]: http://keepachangelog.com/en/1.0.0/
-[license-shield]: https://img.shields.io/github/license/frenck/python-twentemilieu.svg
+[license-shield]: https://img.shields.io/github/license/westenberg/python-meppel-afvalkalender.svg
 [maintenance-shield]: https://img.shields.io/maintenance/yes/2020.svg
-[patreon-shield]: https://frenck.dev/wp-content/uploads/2019/12/patreon.png
-[patreon]: https://www.patreon.com/frenck
 [project-stage-shield]: https://img.shields.io/badge/project%20stage-experimental-yellow.svg
-[releases-shield]: https://img.shields.io/github/release/frenck/python-twentemilieu.svg
-[releases]: https://github.com/frenck/python-twentemilieu/releases
+[releases-shield]: https://img.shields.io/github/release/westenberg/python-meppel-afvalkalender.svg
+[releases]: https://github.com/westenberg/python-meppel-afvalkalender/releases
 [semver]: http://semver.org/spec/v2.0.0.html
