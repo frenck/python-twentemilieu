@@ -22,7 +22,7 @@ trash pickup day.
 ## Installation
 
 ```bash
-pip install meppelafvalkalender
+pip install meppel_afvalkalender
 ```
 
 ## Usage
@@ -124,7 +124,7 @@ check [the contributor's page][contributors].
 
 MIT License
 
-Copyright (c) 2019-2020 Franck Nijhof
+Copyright (c) 2021 Westenberg
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

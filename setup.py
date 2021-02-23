@@ -28,7 +28,7 @@ with open("README.md") as readme_file:
     readme = readme_file.read()
 
 setup(
-    author="Franck Nijhof",
+    author="Westenberg",
     classifiers=[
         "Development Status :: 4 - Beta",
         "Framework :: AsyncIO",
@@ -50,7 +50,7 @@ setup(
     name="meppel_afvalkalender",
     packages=find_packages(include=["meppel_afvalkalender"]),
     test_suite="tests",
-    url="https://github.com/frenck/python-meppel-afvalkalender",
+    url="https://github.com/westenberg/python-meppel-afvalkalender",
     version=get_version(),
     zip_safe=False,
 )
