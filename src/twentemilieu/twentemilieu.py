@@ -71,8 +71,6 @@ class TwenteMilieu:
             scheme="https", host=self.api_host, port=443, path="/api/"
         ).join(URL(uri))
 
-        print(url)
-
         version = metadata.version(__package__)
         headers = {
             "User-Agent": f"PythonTwenteMilieu/{version}",
