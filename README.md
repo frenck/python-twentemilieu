@@ -37,22 +37,21 @@ pip install twentemilieu
 ```python
 import asyncio
 
-from twentemilieu import TwenteMilieu, WASTE_TYPE_NON_RECYCLABLE
+from twentemilieu import TwenteMilieu, WasteType
 
 
-async def main(loop):
+async def main():
     """Show example on stats from Twente Milieu."""
-    async with TwenteMilieu(post_code="1234AB", house_number=1, loop=loop) as tw:
-        unique_id = await tw.unique_id()
+    async with TwenteMilieu(post_code="1234AB", house_number=1) as twente:
+        unique_id = await twente.unique_id()
         print("Unique Address ID:", unique_id)
-        await tw.update()
-        pickup = await tw.next_pickup(WASTE_TYPE_NON_RECYCLABLE)
-        print("Next pickup for Non-recyclable:", pickup)
+        pickups = await twente.update()
+        print("Next pickup for Non-recyclable:", pickup.get(WasteType.NON_RECYCLABLE))
 
 
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
-    loop.run_until_complete(main(loop))
+    loop.run_until_complete(main())
 ```
 
 ## Changelog & Releases
