@@ -135,7 +135,7 @@ class TwenteMilieu:
                     "companyCode": self.company_code,
                     "postCode": self.post_code,
                     "houseNumber": str(self.house_number),
-                    "houseLetter": str(self.house_letter),
+                    "houseLetter": str(self.house_letter or ""),
                 },
             )
             if "dataList" not in response or not response["dataList"]:
