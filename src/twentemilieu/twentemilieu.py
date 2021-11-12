@@ -21,9 +21,6 @@ from .exceptions import (
     TwenteMilieuError,
 )
 
-API_COMPANY_CODE = "8d97bb56-5afd-4cbc-a651-b4f7314264b4"
-API_HOST = "twentemilieuapi.ximmio.com"
-
 
 class WasteType(IntEnum):
     """Enum for the types of waste."""
@@ -41,6 +38,8 @@ class TwenteMilieu:
     post_code: str
     house_number: str | int
 
+    company_code: str = "8d97bb56-5afd-4cbc-a651-b4f7314264b4"
+    api_host: str = "twentemilieuapi.ximmio.com"
     house_letter: str | int = ""
     request_timeout: int = 10
     session: ClientSession | None = None
@@ -68,9 +67,9 @@ class TwenteMilieu:
             TwenteMilieuError: Received an unexpected response from the Twente
                 Milieu API.
         """
-        url = URL.build(scheme="https", host=API_HOST, port=443, path="/api/").join(
-            URL(uri)
-        )
+        url = URL.build(
+            scheme="https", host=self.api_host, port=443, path="/api/"
+        ).join(URL(uri))
 
         print(url)
 
@@ -133,7 +132,7 @@ class TwenteMilieu:
             response = await self._request(
                 "FetchAdress",
                 data={
-                    "companyCode": API_COMPANY_CODE,
+                    "companyCode": self.company_code,
                     "postCode": self.post_code,
                     "houseNumber": str(self.house_number),
                     "houseLetter": str(self.house_letter),
@@ -157,7 +156,7 @@ class TwenteMilieu:
         response = await self._request(
             "GetCalendar",
             data={
-                "companyCode": API_COMPANY_CODE,
+                "companyCode": self.company_code,
                 "uniqueAddressID": self._unique_id,
                 "startDate": (datetime.today() - timedelta(days=1)).date().isoformat(),
                 "endDate": (datetime.today() + timedelta(days=100)).date().isoformat(),

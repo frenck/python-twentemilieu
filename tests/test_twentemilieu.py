@@ -7,13 +7,14 @@ from datetime import date
 import aiohttp
 import pytest
 
-from twentemilieu import TwenteMilieu
+from twentemilieu import TwenteMilieu, WasteType
 from twentemilieu.exceptions import (
     TwenteMilieuAddressError,
     TwenteMilieuConnectionError,
     TwenteMilieuError,
 )
-from twentemilieu.twentemilieu import API_HOST, WasteType
+
+API_HOST = "twentemilieuapi.ximmio.com"
 
 
 @pytest.mark.asyncio
