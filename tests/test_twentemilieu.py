@@ -201,6 +201,10 @@ async def test_update(aresponses):
                             "pickupType": 0,
                         },
                         {
+                            "pickupDates": ["2019-08-22T00:00:00"],
+                            "pickupType": 0,
+                        },
+                        {
                             "pickupDates": ["2019-07-22T00:00:00"],
                             "pickupType": 2,
                         },
