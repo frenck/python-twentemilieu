@@ -174,6 +174,8 @@ class TwenteMilieu:
                 pickup_date = datetime.strptime(
                     min(pickup["pickupDates"]), "%Y-%m-%dT%H:%M:%S"
                 ).date()
+                if previous_pickup_date := pickups.get(waste_type):
+                    pickup_date = min(pickup_date, previous_pickup_date)
             pickups[waste_type] = pickup_date
 
         return pickups
