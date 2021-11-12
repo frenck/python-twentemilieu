@@ -41,7 +41,7 @@ class TwenteMilieu:
     post_code: str
     house_number: str | int
 
-    house_letter: str | int | None = None
+    house_letter: str | int = ""
     request_timeout: int = 10
     session: ClientSession | None = None
 
@@ -136,9 +136,7 @@ class TwenteMilieu:
                     "companyCode": API_COMPANY_CODE,
                     "postCode": self.post_code,
                     "houseNumber": str(self.house_number),
-                    "houseLetter": str(self.house_letter)
-                    if self.house_letter
-                    else None,
+                    "houseLetter": str(self.house_letter),
                 },
             )
             if "dataList" not in response or not response["dataList"]:
