@@ -28,6 +28,7 @@ class WasteType(IntEnum):
     NON_RECYCLABLE = 0
     ORGANIC = 1
     PAPER = 2
+    TREE = 6
     PACKAGES = 10
 
 
