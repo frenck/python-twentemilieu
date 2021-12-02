@@ -18,6 +18,7 @@ async def main():
         print("Next pickup for Packages:", pickups.get(WasteType.PACKAGES))
         print("Next pickup for Paper:", pickups.get(WasteType.PAPER))
         print("Next pickup for Non-recyclable:", pickups.get(WasteType.NON_RECYCLABLE))
+        print("Next pickup for Christmas Tree:", pickups.get(WasteType.TREE))
 
 
 if __name__ == "__main__":
