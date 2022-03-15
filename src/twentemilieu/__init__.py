@@ -1,12 +1,11 @@
 """Asynchronous Python client for the Twente Milieu API."""
 
-from .twentemilieu import (
-    TwenteMilieu,
+from .exceptions import (
     TwenteMilieuAddressError,
     TwenteMilieuConnectionError,
     TwenteMilieuError,
-    WasteType,
 )
+from .twentemilieu import TwenteMilieu, WasteType
 
 __all__ = [
     "TwenteMilieu",

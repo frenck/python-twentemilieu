@@ -48,7 +48,7 @@ class TwenteMilieu:
     _close_session: bool = False
     _unique_id: int | None = None
 
-    async def _request(self, uri: str, *, data=None) -> dict[str, Any]:
+    async def _request(self, uri: str, *, data: dict[str, Any] | None = None) -> Any:
         """Handle a request to the Twente Milieu API.
 
         A generic method for sending/handling HTTP requests done against
@@ -194,7 +194,7 @@ class TwenteMilieu:
         """
         return self
 
-    async def __aexit__(self, *_exc_info) -> None:
+    async def __aexit__(self, *_exc_info: Any) -> None:
         """Async exit.
 
         Args:
