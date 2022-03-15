@@ -144,7 +144,7 @@ class TwenteMilieu:
             self._unique_id = response["dataList"][0]["UniqueId"]
         return self._unique_id
 
-    async def update(self) -> dict[WasteType, date | None]:
+    async def update(self) -> dict[WasteType, list[date]]:
         """Fetch data from Twente Milieu.
 
         Returns:
@@ -158,21 +158,26 @@ class TwenteMilieu:
                 "companyCode": self.company_code,
                 "uniqueAddressID": self._unique_id,
                 "startDate": (datetime.today() - timedelta(days=1)).date().isoformat(),
-                "endDate": (datetime.today() + timedelta(days=100)).date().isoformat(),
+                "endDate": (datetime.today() + timedelta(days=365)).date().isoformat(),
             },
         )
 
-        pickups: dict[WasteType, date | None] = {}
+        pickups: dict[WasteType, list[date]] = {
+            waste_type: [] for waste_type in WasteType
+        }
         for pickup in response["dataList"]:
+            if not pickup["pickupDates"]:
+                continue
             waste_type = WasteType(pickup["pickupType"])
-            pickup_date = None
-            if pickup["pickupDates"]:
+            for pickup_date_raw in pickup["pickupDates"]:
                 pickup_date = datetime.strptime(
-                    min(pickup["pickupDates"]), "%Y-%m-%dT%H:%M:%S"
+                    pickup_date_raw, "%Y-%m-%dT%H:%M:%S"
                 ).date()
-                if previous_pickup_date := pickups.get(waste_type):
-                    pickup_date = min(pickup_date, previous_pickup_date)
-            pickups[waste_type] = pickup_date
+                pickups[waste_type].append(pickup_date)
+
+        # Sort all pickups by date
+        for waste_type in pickups:
+            pickups[waste_type].sort()
 
         return pickups
 

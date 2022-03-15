@@ -192,8 +192,8 @@ async def test_update(aresponses):
                     "dataList": [
                         {
                             "pickupDates": [
-                                "2019-07-19T00:00:00",
                                 "2019-07-20T00:00:00",
+                                "2019-07-19T00:00:00",
                             ],
                             "pickupType": 1,
                         },
@@ -220,7 +220,10 @@ async def test_update(aresponses):
         twente = TwenteMilieu(post_code="1234AB", house_number=1, session=session)
         pickups = await twente.update()
 
-        assert pickups[WasteType.NON_RECYCLABLE] == date(2019, 7, 21)
-        assert pickups[WasteType.ORGANIC] == date(2019, 7, 19)
-        assert pickups[WasteType.PAPER] == date(2019, 7, 22)
-        assert pickups[WasteType.PACKAGES] is None
+        assert pickups[WasteType.NON_RECYCLABLE] == [
+            date(2019, 7, 21),
+            date(2019, 8, 22),
+        ]
+        assert pickups[WasteType.ORGANIC] == [date(2019, 7, 19), date(2019, 7, 20)]
+        assert pickups[WasteType.PAPER] == [date(2019, 7, 22)]
+        assert not pickups[WasteType.PACKAGES]
