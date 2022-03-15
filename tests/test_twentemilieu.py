@@ -6,6 +6,7 @@ from datetime import date
 
 import aiohttp
 import pytest
+from aresponses import Response, ResponsesMockServer
 
 from twentemilieu import TwenteMilieu, WasteType
 from twentemilieu.exceptions import (
@@ -18,7 +19,7 @@ API_HOST = "twentemilieuapi.ximmio.com"
 
 
 @pytest.mark.asyncio
-async def test_json_request(aresponses):
+async def test_json_request(aresponses: ResponsesMockServer) -> None:
     """Test JSON response is handled correctly."""
     aresponses.add(
         API_HOST,
@@ -37,7 +38,7 @@ async def test_json_request(aresponses):
 
 
 @pytest.mark.asyncio
-async def test_internal_session(aresponses):
+async def test_internal_session(aresponses: ResponsesMockServer) -> None:
     """Test JSON response is handled correctly."""
     aresponses.add(
         API_HOST,
@@ -55,7 +56,7 @@ async def test_internal_session(aresponses):
 
 
 @pytest.mark.asyncio
-async def test_internal_eventloop(aresponses):
+async def test_internal_eventloop(aresponses: ResponsesMockServer) -> None:
     """Test JSON response is handled correctly."""
     aresponses.add(
         API_HOST,
@@ -73,10 +74,10 @@ async def test_internal_eventloop(aresponses):
 
 
 @pytest.mark.asyncio
-async def test_timeout(aresponses):
+async def test_timeout(aresponses: ResponsesMockServer) -> None:
     """Test request timeout from Twente Milieu."""
     # Faking a timeout by sleeping
-    async def response_handler(_):
+    async def response_handler(_: aiohttp.ClientResponse) -> Response:
         await asyncio.sleep(2)
         return aresponses.Response(body="Goodmorning!")
 
@@ -94,7 +95,7 @@ async def test_timeout(aresponses):
 
 
 @pytest.mark.asyncio
-async def test_http_error400(aresponses):
+async def test_http_error400(aresponses: ResponsesMockServer) -> None:
     """Test HTTP 404 response handling."""
     aresponses.add(
         API_HOST,
@@ -110,7 +111,7 @@ async def test_http_error400(aresponses):
 
 
 @pytest.mark.asyncio
-async def test_http_error500(aresponses):
+async def test_http_error500(aresponses: ResponsesMockServer) -> None:
     """Test HTTP 500 response handling."""
     aresponses.add(
         API_HOST,
@@ -130,7 +131,7 @@ async def test_http_error500(aresponses):
 
 
 @pytest.mark.asyncio
-async def test_unique_id(aresponses):
+async def test_unique_id(aresponses: ResponsesMockServer) -> None:
     """Test request of a unique address identifier."""
     aresponses.add(
         API_HOST,
@@ -149,7 +150,7 @@ async def test_unique_id(aresponses):
 
 
 @pytest.mark.asyncio
-async def test_invalid_address(aresponses):
+async def test_invalid_address(aresponses: ResponsesMockServer) -> None:
     """Test request of invalid address information."""
     aresponses.add(
         API_HOST,
@@ -168,7 +169,7 @@ async def test_invalid_address(aresponses):
 
 
 @pytest.mark.asyncio
-async def test_update(aresponses):
+async def test_update(aresponses: ResponsesMockServer) -> None:
     """Test request for updating data from Twente Milieu."""
     aresponses.add(
         API_HOST,

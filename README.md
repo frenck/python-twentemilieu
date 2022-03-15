@@ -40,7 +40,7 @@ import asyncio
 from twentemilieu import TwenteMilieu, WasteType
 
 
-async def main():
+async def main() -> None:
     """Show example on stats from Twente Milieu."""
     async with TwenteMilieu(post_code="1234AB", house_number=1) as twente:
         unique_id = await twente.unique_id()
@@ -50,8 +50,7 @@ async def main():
 
 
 if __name__ == "__main__":
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(main())
+    asyncio.run(main())
 ```
 
 ## Changelog & Releases
