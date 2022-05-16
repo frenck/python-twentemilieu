@@ -132,7 +132,7 @@ class TwenteMilieu:
                 "FetchAdress",
                 data={
                     "companyCode": self.company_code,
-                    "postCode": self.post_code,
+                    "postCode": self.post_code.replace(" ", "").upper(),
                     "houseNumber": str(self.house_number),
                     "houseLetter": str(self.house_letter or ""),
                 },
