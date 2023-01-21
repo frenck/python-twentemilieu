@@ -161,6 +161,7 @@ SOFTWARE.
 [pre-commit]: https://pre-commit.com/
 [project-stage-shield]: https://img.shields.io/badge/project%20stage-experimental-yellow.svg
 [python-versions-shield]: https://img.shields.io/pypi/pyversions/twentemilieu
+[pypi]: https://pypi.org/project/twentemilieu
 [releases-shield]: https://img.shields.io/github/release/frenck/python-twentemilieu.svg
 [releases]: https://github.com/frenck/python-twentemilieu/releases
 [semver]: http://semver.org/spec/v2.0.0.html
