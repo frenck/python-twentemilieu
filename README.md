@@ -155,7 +155,7 @@ SOFTWARE.
 [poetry-install]: https://python-poetry.org/docs/#installation
 [poetry]: https://python-poetry.org
 [pre-commit]: https://pre-commit.com/
-[project-stage-shield]: https://img.shields.io/badge/project%20stage-experimental-yellow.svg
+[project-stage-shield]: https://img.shields.io/badge/project%20stage-production%20ready-brightgreen.svg
 [python-versions-shield]: https://img.shields.io/pypi/pyversions/twentemilieu
 [pypi]: https://pypi.org/project/twentemilieu
 [releases-shield]: https://img.shields.io/github/release/frenck/python-twentemilieu.svg
