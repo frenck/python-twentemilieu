@@ -8,6 +8,7 @@ from datetime import date, datetime, timedelta
 from enum import IntEnum
 from importlib import metadata
 from typing import Any
+from zoneinfo import ZoneInfo
 
 import aiohttp
 import async_timeout
@@ -55,21 +56,27 @@ class TwenteMilieu:
         the Twente Milieu API.
 
         Args:
+        ----
             uri: Request URI
             data: Dictionary of data to send to the Twente Milieu API.
 
         Returns:
+        -------
             A Python dictionary (JSON decoded) with the response from
             the Twente Milieu API.
 
         Raises:
+        ------
             TwenteMilieuConnectionError: An error occurred while communicating with
                 the Twente Milieu API.
             TwenteMilieuError: Received an unexpected response from the Twente
                 Milieu API.
         """
         url = URL.build(
-            scheme="https", host=self.api_host, port=443, path="/api/"
+            scheme="https",
+            host=self.api_host,
+            port=443,
+            path="/api/",
         ).join(URL(uri))
 
         version = metadata.version(__package__)
@@ -85,16 +92,18 @@ class TwenteMilieu:
         try:
             async with async_timeout.timeout(self.request_timeout):
                 response = await self.session.request(
-                    "POST", url, json=data, headers=headers, ssl=True
+                    "POST",
+                    url,
+                    json=data,
+                    headers=headers,
+                    ssl=True,
                 )
         except asyncio.TimeoutError as exception:
-            raise TwenteMilieuConnectionError(
-                "Timeout occurred while connecting to Twente Milieu API."
-            ) from exception
+            msg = "Timeout occurred while connecting to Twente Milieu API."
+            raise TwenteMilieuConnectionError(msg) from exception
         except (aiohttp.ClientError, socket.gaierror) as exception:
-            raise TwenteMilieuConnectionError(
-                "Error occurred while communicating with Twente Milieu."
-            ) from exception
+            msg = "Error occurred while communicating with Twente Milieu API."
+            raise TwenteMilieuConnectionError(msg) from exception
 
         content_type = response.headers.get("Content-Type", "")
         if (response.status // 100) in [4, 5]:
@@ -103,16 +112,19 @@ class TwenteMilieu:
 
             if content_type == "application/json":
                 raise TwenteMilieuError(
-                    response.status, json.loads(contents.decode("utf8"))
+                    response.status,
+                    json.loads(contents.decode("utf8")),
                 )
             raise TwenteMilieuError(
-                response.status, {"message": contents.decode("utf8")}
+                response.status,
+                {"message": contents.decode("utf8")},
             )
 
         if "application/json" not in content_type:
             text = await response.text()
+            msg = "Unexpected response from the Twente Milieu API"
             raise TwenteMilieuError(
-                "Unexpected response from the Twente Milieu API",
+                msg,
                 {"Content-Type": content_type, "response": text},
             )
 
@@ -121,10 +133,12 @@ class TwenteMilieu:
     async def unique_id(self) -> int:
         """Return unique address ID.
 
-        Returns:
+        Returns
+        -------
             Unique address ID.
 
-        Raises:
+        Raises
+        ------
             TwenteMilieuAddressError: Address could not be found.
         """
         if self._unique_id is None:
@@ -138,27 +152,32 @@ class TwenteMilieu:
                 },
             )
             if "dataList" not in response or not response["dataList"]:
-                raise TwenteMilieuAddressError(
-                    "Address not found in Twente Milieu service area"
-                )
+                msg = "Address not found in Twente Milieu service area"
+                raise TwenteMilieuAddressError(msg)
             self._unique_id = response["dataList"][0]["UniqueId"]
         return self._unique_id
 
     async def update(self) -> dict[WasteType, list[date]]:
         """Fetch data from Twente Milieu.
 
-        Returns:
+        Returns
+        -------
             A dictionary with the date for each waste type from Twente Milieu.
         """
         await self.unique_id()
 
+        timezone = ZoneInfo("Europe/Amsterdam")
         response = await self._request(
             "GetCalendar",
             data={
                 "companyCode": self.company_code,
                 "uniqueAddressID": self._unique_id,
-                "startDate": (datetime.today() - timedelta(days=1)).date().isoformat(),
-                "endDate": (datetime.today() + timedelta(days=365)).date().isoformat(),
+                "startDate": (datetime.now(tz=timezone) - timedelta(days=1))
+                .date()
+                .isoformat(),
+                "endDate": (datetime.now(tz=timezone) + timedelta(days=365))
+                .date()
+                .isoformat(),
             },
         )
 
@@ -170,9 +189,14 @@ class TwenteMilieu:
                 continue
             waste_type = WasteType(pickup["pickupType"])
             for pickup_date_raw in pickup["pickupDates"]:
-                pickup_date = datetime.strptime(
-                    pickup_date_raw, "%Y-%m-%dT%H:%M:%S"
-                ).date()
+                pickup_date = (
+                    datetime.strptime(
+                        pickup_date_raw,
+                        "%Y-%m-%dT%H:%M:%S",
+                    )
+                    .replace(tzinfo=timezone)
+                    .date()
+                )
                 pickups[waste_type].append(pickup_date)
 
         # Sort all pickups by date
@@ -189,7 +213,8 @@ class TwenteMilieu:
     async def __aenter__(self) -> TwenteMilieu:
         """Async enter.
 
-        Returns:
+        Returns
+        -------
             The TwenteMilieu object.
         """
         return self
@@ -198,6 +223,7 @@ class TwenteMilieu:
         """Async exit.
 
         Args:
+        ----
             _exc_info: Exec type.
         """
         await self.close()

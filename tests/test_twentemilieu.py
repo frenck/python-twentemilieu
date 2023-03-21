@@ -2,7 +2,9 @@
 # pylint: disable=protected-access
 import asyncio
 import json
+import socket
 from datetime import date
+from unittest.mock import patch
 
 import aiohttp
 import pytest
@@ -18,7 +20,6 @@ from twentemilieu.exceptions import (
 API_HOST = "twentemilieuapi.ximmio.com"
 
 
-@pytest.mark.asyncio
 async def test_json_request(aresponses: ResponsesMockServer) -> None:
     """Test JSON response is handled correctly."""
     aresponses.add(
@@ -35,9 +36,9 @@ async def test_json_request(aresponses: ResponsesMockServer) -> None:
         twente = TwenteMilieu(post_code="1234AB", house_number=1, session=session)
         response = await twente._request("")
         assert response["status"] == "ok"
+        await twente.close()
 
 
-@pytest.mark.asyncio
 async def test_internal_session(aresponses: ResponsesMockServer) -> None:
     """Test JSON response is handled correctly."""
     aresponses.add(
@@ -55,7 +56,6 @@ async def test_internal_session(aresponses: ResponsesMockServer) -> None:
         assert response["status"] == "ok"
 
 
-@pytest.mark.asyncio
 async def test_internal_eventloop(aresponses: ResponsesMockServer) -> None:
     """Test JSON response is handled correctly."""
     aresponses.add(
@@ -73,9 +73,9 @@ async def test_internal_eventloop(aresponses: ResponsesMockServer) -> None:
         assert response["status"] == "ok"
 
 
-@pytest.mark.asyncio
 async def test_timeout(aresponses: ResponsesMockServer) -> None:
     """Test request timeout from Twente Milieu."""
+
     # Faking a timeout by sleeping
     async def response_handler(_: aiohttp.ClientResponse) -> Response:
         await asyncio.sleep(2)
@@ -94,7 +94,6 @@ async def test_timeout(aresponses: ResponsesMockServer) -> None:
             assert await twente._request("")
 
 
-@pytest.mark.asyncio
 async def test_http_error400(aresponses: ResponsesMockServer) -> None:
     """Test HTTP 404 response handling."""
     aresponses.add(
@@ -110,7 +109,6 @@ async def test_http_error400(aresponses: ResponsesMockServer) -> None:
             assert await twente._request("")
 
 
-@pytest.mark.asyncio
 async def test_http_error500(aresponses: ResponsesMockServer) -> None:
     """Test HTTP 500 response handling."""
     aresponses.add(
@@ -130,7 +128,33 @@ async def test_http_error500(aresponses: ResponsesMockServer) -> None:
             assert await twente._request("")
 
 
-@pytest.mark.asyncio
+async def test_unexpected_response(aresponses: ResponsesMockServer) -> None:
+    """Test unexpected response handling."""
+    aresponses.add(
+        API_HOST,
+        "/api/",
+        "POST",
+        aresponses.Response(text="OMG PUPPIES!", status=200),
+    )
+
+    async with aiohttp.ClientSession() as session:
+        twente = TwenteMilieu(post_code="1234AB", house_number=1, session=session)
+        with pytest.raises(TwenteMilieuError):
+            assert await twente._request("")
+
+
+async def test_communication_error() -> None:
+    """Test communication error handling."""
+    async with aiohttp.ClientSession() as session:
+        twente = TwenteMilieu(post_code="1234AB", house_number=1, session=session)
+        with patch.object(
+            session,
+            "request",
+            side_effect=socket.gaierror,
+        ), pytest.raises(TwenteMilieuConnectionError):
+            assert await twente._request("")
+
+
 async def test_unique_id(aresponses: ResponsesMockServer) -> None:
     """Test request of a unique address identifier."""
     aresponses.add(
@@ -147,9 +171,10 @@ async def test_unique_id(aresponses: ResponsesMockServer) -> None:
         twente = TwenteMilieu(post_code="1234AB", house_number=1, session=session)
         unique_id = await twente.unique_id()
         assert unique_id == "12345"
+        unique_id = await twente.unique_id()
+        assert unique_id == "12345"
 
 
-@pytest.mark.asyncio
 async def test_invalid_address(aresponses: ResponsesMockServer) -> None:
     """Test request of invalid address information."""
     aresponses.add(
@@ -168,7 +193,6 @@ async def test_invalid_address(aresponses: ResponsesMockServer) -> None:
             assert await twente.unique_id()
 
 
-@pytest.mark.asyncio
 async def test_update(aresponses: ResponsesMockServer) -> None:
     """Test request for updating data from Twente Milieu."""
     aresponses.add(
@@ -211,8 +235,8 @@ async def test_update(aresponses: ResponsesMockServer) -> None:
                             "pickupType": 2,
                         },
                         {"pickupDates": [], "pickupType": 10},
-                    ]
-                }
+                    ],
+                },
             ),
         ),
     )
