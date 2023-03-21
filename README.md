@@ -141,7 +141,7 @@ SOFTWARE.
 
 [build-shield]: https://github.com/frenck/python-twentemilieu/workflows/Continuous%20Integration/badge.svg
 [build]: https://github.com/frenck/python-twentemilieu/actions
-[codecov-shield]: https://codecov.io/gh/frenck/python-twentemilieu/branch/master/graph/badge.svg
+[codecov-shield]: https://codecov.io/gh/frenck/python-twentemilieu/branch/main/graph/badge.svg
 [codecov]: https://codecov.io/gh/frenck/python-twentemilieu
 [contributors]: https://github.com/frenck/python-twentemilieu/graphs/contributors
 [frenck]: https://github.com/frenck

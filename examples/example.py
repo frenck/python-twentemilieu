@@ -8,7 +8,7 @@ from twentemilieu import TwenteMilieu, WasteType
 
 async def main() -> None:
     """Show example on stats from Twente Milieu."""
-    async with TwenteMilieu(post_code="7545KR", house_number=175) as twente:
+    async with TwenteMilieu(post_code="7531LA", house_number=16) as twente:
         print(twente)
         unique_id = await twente.unique_id()
         print("Unique Address ID:", unique_id)
