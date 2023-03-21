@@ -8,7 +8,7 @@
 
 [![Build Status][build-shield]][build]
 [![Code Coverage][codecov-shield]][codecov]
-[![Code Quality][code-quality-shield]][code-quality]
+[![Quality Gate Status][sonarcloud-shield]][sonarcloud]
 
 [![Sponsor Frenck via GitHub Sponsors][github-sponsors-shield]][github-sponsors]
 
@@ -83,9 +83,9 @@ This Python project is fully managed using the [Poetry][poetry] dependency manag
 
 You need at least:
 
-- Python 3.8+
+- Python 3.10+
 - [Poetry][poetry-install]
-- NodeJS 12+ (including NPM)
+- NodeJS 18+ (including NPM)
 
 To install all packages, including all development requirements:
 
@@ -119,7 +119,7 @@ check [the contributor's page][contributors].
 
 MIT License
 
-Copyright (c) 2019-2021 Franck Nijhof
+Copyright (c) 2019-2023 Franck Nijhof
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -141,19 +141,15 @@ SOFTWARE.
 
 [build-shield]: https://github.com/frenck/python-twentemilieu/workflows/Continuous%20Integration/badge.svg
 [build]: https://github.com/frenck/python-twentemilieu/actions
-[code-quality-shield]: https://img.shields.io/lgtm/grade/python/g/frenck/python-twentemilieu.svg?logo=lgtm&logoWidth=18
-[code-quality]: https://lgtm.com/projects/g/frenck/python-twentemilieu/context:python
 [codecov-shield]: https://codecov.io/gh/frenck/python-twentemilieu/branch/master/graph/badge.svg
 [codecov]: https://codecov.io/gh/frenck/python-twentemilieu
-[commits-shield]: https://img.shields.io/github/commit-activity/y/frenck/python-twentemilieu.svg
-[commits]: https://github.com/frenck/python-twentemilieu/commits/master
 [contributors]: https://github.com/frenck/python-twentemilieu/graphs/contributors
 [frenck]: https://github.com/frenck
 [github-sponsors-shield]: https://frenck.dev/wp-content/uploads/2019/12/github_sponsor.png
 [github-sponsors]: https://github.com/sponsors/frenck
 [keepchangelog]: http://keepachangelog.com/en/1.0.0/
 [license-shield]: https://img.shields.io/github/license/frenck/python-twentemilieu.svg
-[maintenance-shield]: https://img.shields.io/maintenance/yes/2021.svg
+[maintenance-shield]: https://img.shields.io/maintenance/yes/2023.svg
 [patreon-shield]: https://frenck.dev/wp-content/uploads/2019/12/patreon.png
 [patreon]: https://www.patreon.com/frenck
 [poetry-install]: https://python-poetry.org/docs/#installation
@@ -165,3 +161,5 @@ SOFTWARE.
 [releases-shield]: https://img.shields.io/github/release/frenck/python-twentemilieu.svg
 [releases]: https://github.com/frenck/python-twentemilieu/releases
 [semver]: http://semver.org/spec/v2.0.0.html
+[sonarcloud-shield]: https://sonarcloud.io/api/project_badges/measure?project=frenck_python-twentemilieu&metric=alert_status
+[sonarcloud]: https://sonarcloud.io/summary/new_code?id=frenck_python-twentemilieu
