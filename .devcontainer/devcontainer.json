@@ -52,6 +52,6 @@
     }
   },
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
-  "name": "Asynchronous client for Elgato Lights",
+  "name": "Asynchronous Python client for Twente Milieu API",
   "updateContentCommand": ". ${NVM_DIR}/nvm.sh && nvm install && nvm use && npm install && poetry install && poetry run pre-commit install"
 }
