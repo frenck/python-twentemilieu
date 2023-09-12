@@ -42,7 +42,7 @@ pylint = "2.17.5"
 pytest = "7.4.2"
 pytest-asyncio = "0.21.1"
 pytest-cov = "4.1.0"
-ruff = "0.0.282"
+ruff = "0.0.288"
 safety = "2.4.0b1"
 yamllint = "1.32.0"
 
@@ -127,6 +127,7 @@ addopts = "--cov"
 asyncio_mode = "auto"
 
 [tool.ruff]
+target-version = "py311"
 ignore = [
   "ANN101", # Self... explanatory
   "ANN401", # Opinioated warning on disallowing dynamically typed expressions
