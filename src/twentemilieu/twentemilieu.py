@@ -7,7 +7,7 @@ import socket
 from datetime import date, datetime, timedelta
 from enum import IntEnum
 from importlib import metadata
-from typing import Any
+from typing import Any, Self
 from zoneinfo import ZoneInfo
 
 import aiohttp
@@ -210,7 +210,7 @@ class TwenteMilieu:
         if self.session and self._close_session:
             await self.session.close()
 
-    async def __aenter__(self) -> TwenteMilieu:
+    async def __aenter__(self) -> Self:
         """Async enter.
 
         Returns
@@ -219,7 +219,7 @@ class TwenteMilieu:
         """
         return self
 
-    async def __aexit__(self, *_exc_info: Any) -> None:
+    async def __aexit__(self, *_exc_info: object) -> None:
         """Async exit.
 
         Args:
