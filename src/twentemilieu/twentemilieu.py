@@ -11,7 +11,6 @@ from typing import Any, Self
 from zoneinfo import ZoneInfo
 
 import aiohttp
-import async_timeout
 from aiohttp.client import ClientSession
 from attr import dataclass
 from yarl import URL
@@ -90,7 +89,7 @@ class TwenteMilieu:
             self._close_session = True
 
         try:
-            async with async_timeout.timeout(self.request_timeout):
+            async with asyncio.timeout(self.request_timeout):
                 response = await self.session.request(
                     "POST",
                     url,
