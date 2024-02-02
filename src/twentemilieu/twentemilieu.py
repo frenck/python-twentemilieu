@@ -8,12 +8,12 @@ from datetime import date, datetime, timedelta
 from enum import IntEnum
 from importlib import metadata
 from typing import Any, Self
-from zoneinfo import ZoneInfo
 
 import aiohttp
 from aiohttp.client import ClientSession
 from attr import dataclass
 from yarl import URL
+from zoneinfo import ZoneInfo
 
 from .exceptions import (
     TwenteMilieuAddressError,
@@ -70,6 +70,7 @@ class TwenteMilieu:
                 the Twente Milieu API.
             TwenteMilieuError: Received an unexpected response from the Twente
                 Milieu API.
+
         """
         url = URL.build(
             scheme="https",
@@ -139,6 +140,7 @@ class TwenteMilieu:
         Raises
         ------
             TwenteMilieuAddressError: Address could not be found.
+
         """
         if self._unique_id is None:
             response = await self._request(
@@ -162,6 +164,7 @@ class TwenteMilieu:
         Returns
         -------
             A dictionary with the date for each waste type from Twente Milieu.
+
         """
         await self.unique_id()
 
@@ -215,6 +218,7 @@ class TwenteMilieu:
         Returns
         -------
             The TwenteMilieu object.
+
         """
         return self
 
@@ -224,5 +228,6 @@ class TwenteMilieu:
         Args:
         ----
             _exc_info: Exec type.
+
         """
         await self.close()
