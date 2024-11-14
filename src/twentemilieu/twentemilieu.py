@@ -12,9 +12,9 @@ from typing import Any, Self
 
 import aiohttp
 from aiohttp.client import ClientSession
+from aiozoneinfo import async_get_time_zone
 from attr import dataclass
 from yarl import URL
-from zoneinfo import ZoneInfo
 
 from .exceptions import (
     TwenteMilieuAddressError,
@@ -169,7 +169,7 @@ class TwenteMilieu:
         """
         await self.unique_id()
 
-        timezone = ZoneInfo("Europe/Amsterdam")
+        timezone = await async_get_time_zone("Europe/Amsterdam")
         response = await self._request(
             "GetCalendar",
             data={
