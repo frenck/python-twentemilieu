@@ -47,11 +47,8 @@
     "ghcr.io/devcontainers-contrib/features/poetry:2": {},
     "ghcr.io/devcontainers/features/github-cli:1": {},
     "ghcr.io/devcontainers/features/node:1": {},
-    "ghcr.io/devcontainers/features/python:1": {
-      "installTools": false
-    }
   },
-  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "image": "mcr.microsoft.com/devcontainers/python:3",
   "name": "Asynchronous Python client for Twente Milieu API",
   "updateContentCommand": ". ${NVM_DIR}/nvm.sh && nvm install && nvm use && npm install && poetry install && poetry run pre-commit install"
 }
