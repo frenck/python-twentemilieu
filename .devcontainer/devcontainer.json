@@ -46,7 +46,7 @@
   "features": {
     "ghcr.io/devcontainers-contrib/features/poetry:2": {},
     "ghcr.io/devcontainers/features/github-cli:1": {},
-    "ghcr.io/devcontainers/features/node:1": {},
+    "ghcr.io/devcontainers/features/node:1": {}
   },
   "image": "mcr.microsoft.com/devcontainers/python:3",
   "name": "Asynchronous Python client for Twente Milieu API",
