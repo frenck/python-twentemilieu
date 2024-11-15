@@ -22,6 +22,8 @@ from .exceptions import (
     TwenteMilieuError,
 )
 
+TIMEZONE_INFO = ZoneInfo("Europe/Amsterdam")
+
 
 class WasteType(IntEnum):
     """Enum for the types of waste."""
@@ -169,16 +171,15 @@ class TwenteMilieu:
         """
         await self.unique_id()
 
-        timezone = ZoneInfo("Europe/Amsterdam")
         response = await self._request(
             "GetCalendar",
             data={
                 "companyCode": self.company_code,
                 "uniqueAddressID": self._unique_id,
-                "startDate": (datetime.now(tz=timezone) - timedelta(days=1))
+                "startDate": (datetime.now(tz=TIMEZONE_INFO) - timedelta(days=1))
                 .date()
                 .isoformat(),
-                "endDate": (datetime.now(tz=timezone) + timedelta(days=365))
+                "endDate": (datetime.now(tz=TIMEZONE_INFO) + timedelta(days=365))
                 .date()
                 .isoformat(),
             },
@@ -197,7 +198,7 @@ class TwenteMilieu:
                         pickup_date_raw,
                         "%Y-%m-%dT%H:%M:%S",
                     )
-                    .replace(tzinfo=timezone)
+                    .replace(tzinfo=TIMEZONE_INFO)
                     .date()
                 )
                 pickups[waste_type].append(pickup_date)
