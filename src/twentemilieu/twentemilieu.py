@@ -22,6 +22,8 @@ from .exceptions import (
     TwenteMilieuError,
 )
 
+TIMEZONE_INFO = ZoneInfo("Europe/Amsterdam")
+
 
 class WasteType(IntEnum):
     """Enum for the types of waste."""
@@ -42,7 +44,6 @@ class TwenteMilieu:
 
     company_code: str = "8d97bb56-5afd-4cbc-a651-b4f7314264b4"
     api_host: str = "twentemilieuapi.ximmio.com"
-    timezone = ZoneInfo("Europe/Amsterdam")
     house_letter: str | int = ""
     request_timeout: int = 10
     session: ClientSession | None = None
@@ -175,10 +176,10 @@ class TwenteMilieu:
             data={
                 "companyCode": self.company_code,
                 "uniqueAddressID": self._unique_id,
-                "startDate": (datetime.now(tz=self.timezone) - timedelta(days=1))
+                "startDate": (datetime.now(tz=TIMEZONE_INFO) - timedelta(days=1))
                 .date()
                 .isoformat(),
-                "endDate": (datetime.now(tz=self.timezone) + timedelta(days=365))
+                "endDate": (datetime.now(tz=TIMEZONE_INFO) + timedelta(days=365))
                 .date()
                 .isoformat(),
             },
@@ -197,7 +198,7 @@ class TwenteMilieu:
                         pickup_date_raw,
                         "%Y-%m-%dT%H:%M:%S",
                     )
-                    .replace(tzinfo=self.timezone)
+                    .replace(tzinfo=TIMEZONE_INFO)
                     .date()
                 )
                 pickups[waste_type].append(pickup_date)
