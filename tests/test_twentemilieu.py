@@ -148,11 +148,14 @@ async def test_communication_error() -> None:
     """Test communication error handling."""
     async with aiohttp.ClientSession() as session:
         twente = TwenteMilieu(post_code="1234AB", house_number=1, session=session)
-        with patch.object(
-            session,
-            "request",
-            side_effect=socket.gaierror,
-        ), pytest.raises(TwenteMilieuConnectionError):
+        with (
+            patch.object(
+                session,
+                "request",
+                side_effect=socket.gaierror,
+            ),
+            pytest.raises(TwenteMilieuConnectionError),
+        ):
             assert await twente._request("")
 
 
