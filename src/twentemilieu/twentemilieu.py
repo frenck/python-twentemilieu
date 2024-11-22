@@ -9,12 +9,12 @@ from datetime import date, datetime, timedelta
 from enum import IntEnum
 from importlib import metadata
 from typing import Any, Self
+from zoneinfo import ZoneInfo
 
 import aiohttp
 from aiohttp.client import ClientSession
 from attr import dataclass
 from yarl import URL
-from zoneinfo import ZoneInfo
 
 from .exceptions import (
     TwenteMilieuAddressError,
@@ -204,7 +204,7 @@ class TwenteMilieu:
                 pickups[waste_type].append(pickup_date)
 
         # Sort all pickups by date
-        for waste_type in pickups:
+        for waste_type in pickups:  # noqa: PLC0206
             pickups[waste_type].sort()
 
         return pickups
