@@ -34,6 +34,27 @@ class WasteType(IntEnum):
     TREE = 6
     PACKAGES = 10
 
+    @classmethod
+    def _missing_(cls, value: object) -> WasteType:
+        """Fallback for unknown waste types.
+
+        Some waste types returned from the Twente Milieu API are semantically the same
+        as some types already defined in this enum. This maps the API value to the
+        correct enum value.
+
+        An example would be for packages. Some housing has a container for packages,
+        and high-density living may need to place their packages at a central point
+        for pick-up. Both is a pick-up for packages, but their waste type returned
+        from the API are different.
+
+        """
+        if not isinstance(value, int):
+            raise TypeError(value)
+
+        return {
+            56: WasteType.PACKAGES,
+        }[value]
+
 
 @dataclass
 class TwenteMilieu:

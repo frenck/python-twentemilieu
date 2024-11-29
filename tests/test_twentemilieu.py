@@ -40,6 +40,16 @@ async def test_json_request(aresponses: ResponsesMockServer) -> None:
         await twente.close()
 
 
+async def test_wastetype_fallback() -> None:
+    """Test the WasteType fallback is handled correctly."""
+    assert (
+        WasteType(56) == WasteType.PACKAGES
+    ), "Fallback for high-density packages not handled!"
+
+    with pytest.raises(TypeError):
+        WasteType._missing_("wrong_type")
+
+
 async def test_internal_session(aresponses: ResponsesMockServer) -> None:
     """Test JSON response is handled correctly."""
     aresponses.add(
@@ -238,6 +248,10 @@ async def test_update(aresponses: ResponsesMockServer) -> None:
                             "pickupDates": ["2019-07-22T00:00:00"],
                             "pickupType": 2,
                         },
+                        {
+                            "pickupDates": ["2019-07-23T00:00:00"],
+                            "pickupType": 56,
+                        },
                         {"pickupDates": [], "pickupType": 10},
                     ],
                 },
@@ -255,4 +269,4 @@ async def test_update(aresponses: ResponsesMockServer) -> None:
         ]
         assert pickups[WasteType.ORGANIC] == [date(2019, 7, 19), date(2019, 7, 20)]
         assert pickups[WasteType.PAPER] == [date(2019, 7, 22)]
-        assert not pickups[WasteType.PACKAGES]
+        assert pickups[WasteType.PACKAGES] == [date(2019, 7, 23)]
