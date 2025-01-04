@@ -7,7 +7,6 @@ import json
 import socket
 from datetime import date, datetime, timedelta
 from enum import IntEnum
-from importlib import metadata
 from typing import Any, Self
 from zoneinfo import ZoneInfo
 
@@ -103,9 +102,7 @@ class TwenteMilieu:
             path="/api/",
         ).join(URL(uri))
 
-        version = metadata.version(__package__)
         headers = {
-            "User-Agent": f"PythonTwenteMilieu/{version}",
             "Accept": "application/json, text/plain, */*",
         }
 
