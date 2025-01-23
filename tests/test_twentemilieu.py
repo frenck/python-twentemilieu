@@ -42,9 +42,9 @@ async def test_json_request(aresponses: ResponsesMockServer) -> None:
 
 async def test_wastetype_fallback() -> None:
     """Test the WasteType fallback is handled correctly."""
-    assert (
-        WasteType(56) == WasteType.PACKAGES
-    ), "Fallback for high-density packages not handled!"
+    assert WasteType(56) == WasteType.PACKAGES, (
+        "Fallback for high-density packages not handled!"
+    )
 
     with pytest.raises(TypeError):
         WasteType._missing_("wrong_type")
