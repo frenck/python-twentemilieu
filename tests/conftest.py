@@ -1,15 +1,28 @@
 """Shared fixtures and helpers for the test suite."""
+# pylint: disable=wrong-import-position
 
 from __future__ import annotations
 
 import json
+import os
 from datetime import date
 from pathlib import Path
 from typing import Any
 
+# Typer caches TERMINAL_WIDTH into typer.rich_utils.MAX_WIDTH at import time,
+# so forcing a deterministic width for snapshot tests must happen before typer
+# is imported anywhere in the test suite. conftest.py is loaded before any
+# test module, so setting it here is guaranteed to run first. We also
+# explicitly import typer.rich_utils and overwrite MAX_WIDTH to cover any
+# edge case where typer might have been imported before this line runs.
+os.environ["TERMINAL_WIDTH"] = "100"
+
 import pytest
+import typer.rich_utils
 
 from twentemilieu import WasteType
+
+typer.rich_utils.MAX_WIDTH = 100
 
 FIXTURES_DIR = Path(__file__).parent / "fixtures"
 
