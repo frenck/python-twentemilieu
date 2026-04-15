@@ -24,6 +24,12 @@ dynamic = ["dependencies"]
 packages = [{ include = "twentemilieu", from = "src" }]
 dependencies = ['aiohttp (>=3.0.0)', 'yarl (>=1.6.0)']
 
+[project.optional-dependencies]
+cli = ["typer>=0.15.1"]
+
+[project.scripts]
+twentemilieu = "twentemilieu.cli:cli"
+
 [tool.poetry]
 requires-poetry = '>=2.0'
 
@@ -50,6 +56,7 @@ pytest-cov = "7.1.0"
 ruff = "0.15.10"
 safety = "3.7.0"
 syrupy = "5.1.0"
+typer = "0.24.1"
 yamllint = "1.38.0"
 zizmor = "1.24.1"
 
@@ -60,6 +67,7 @@ source = ["twentemilieu"]
 [tool.coverage.report]
 show_missing = true
 fail_under = 10
+omit = ["src/twentemilieu/cli/async_typer.py"]
 
 [tool.ty.environment]
 python-version = "3.11"
@@ -83,7 +91,6 @@ ignore-imports = true
 max-line-length = 88
 
 [tool.pytest.ini_options]
-addopts = "--cov"
 asyncio_mode = "auto"
 
 [tool.ruff.lint]

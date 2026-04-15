@@ -1,0 +1,216 @@
+# serializer version: 1
+# name: test_address_error_handler
+  '''
+  ╭─────────────────────────── Address not found ────────────────────────────╮
+  │                                                                          │
+  │     The provided address could not be found in the Twente Milieu service │
+  │     area. Please double-check the postal code and house number (and      │
+  │     optional house letter) and try again.                                │
+  │                                                                          │
+  ╰──────────────────────────────────────────────────────────────────────────╯
+  
+  '''
+# ---
+# name: test_connection_error_handler
+  '''
+  ╭──────────────────────── Connection error ─────────────────────────╮
+  │                                                                   │
+  │     Could not connect to the Twente Milieu API. Please check your │
+  │     internet connection and try again.                            │
+  │                                                                   │
+  ╰───────────────────────────────────────────────────────────────────╯
+  
+  '''
+# ---
+# name: test_help
+  '''
+                                                                                                      
+   Usage: root [OPTIONS] COMMAND [ARGS]...                                                            
+                                                                                                      
+   Twente Milieu CLI                                                                                  
+                                                                                                      
+  ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
+  │ --help          Show this message and exit.                                                      │
+  ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+  ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
+  │ upcoming  List the next pickups across all waste types in chronological order.                   │
+  │ next      Show the very next pickup, optionally filtered to a specific waste type.               │
+  ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+  
+  
+  '''
+# ---
+# name: test_next
+  '''
+  Next pickup: Organic (GFT) on 2026-04-17
+  
+  '''
+# ---
+# name: test_next_help
+  '''
+                                                                                                      
+   Usage: root next [OPTIONS]                                                                         
+                                                                                                      
+   Show the very next pickup, optionally filtered to a specific waste type.                           
+                                                                                                      
+  ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
+  │ *  --post-code             TEXT                               Postal code of the address         │
+  │                                                               [env var: TWENTEMILIEU_POST_CODE]  │
+  │                                                               [required]                         │
+  │ *  --house-number          INTEGER                            House number of the address        │
+  │                                                               [env var:                          │
+  │                                                               TWENTEMILIEU_HOUSE_NUMBER]         │
+  │                                                               [required]                         │
+  │    --house-letter          TEXT                               Optional house letter of the       │
+  │                                                               address                            │
+  │                                                               [env var:                          │
+  │                                                               TWENTEMILIEU_HOUSE_LETTER]         │
+  │    --waste-type    -t      [non-recyclable|organic|paper|pac  Limit the lookup to a single waste │
+  │                            kages|tree]                        type                               │
+  │    --json                                                     Emit machine-readable JSON output  │
+  │    --help                                                     Show this message and exit.        │
+  ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+  
+  
+  '''
+# ---
+# name: test_next_json
+  '''
+  {
+    "date": "2026-04-17",
+    "waste_type": "organic"
+  }
+  
+  '''
+# ---
+# name: test_next_none
+  '''
+  No upcoming pickups scheduled.
+  
+  '''
+# ---
+# name: test_next_none_json
+  '''
+  null
+  
+  '''
+# ---
+# name: test_next_waste_type_none
+  '''
+  No upcoming tree pickup scheduled.
+  
+  '''
+# ---
+# name: test_next_with_waste_type
+  '''
+  Next pickup: Organic (GFT) on 2026-04-17
+  
+  '''
+# ---
+# name: test_next_with_waste_type_json
+  '''
+  {
+    "date": "2026-04-28",
+    "waste_type": "paper"
+  }
+  
+  '''
+# ---
+# name: test_upcoming
+  '''
+   Next 5 pickups for 7531AT 148 
+  ┏━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━┓
+  ┃ Date       ┃ Waste type     ┃
+  ┡━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━┩
+  │ 2026-04-17 │ Organic (GFT)  │
+  │ 2026-04-20 │ Non-recyclable │
+  │ 2026-04-22 │ Packages (PMD) │
+  │ 2026-04-24 │ Organic (GFT)  │
+  │ 2026-04-28 │ Paper          │
+  └────────────┴────────────────┘
+  
+  '''
+# ---
+# name: test_upcoming_empty
+  '''
+  Next 5 pickups for 7531AT 148 
+  ┏━━━━━━┳━━━━━━━━━━━━━━━━━━━━━┓
+  ┃ Date ┃ Waste type          ┃
+  ┡━━━━━━╇━━━━━━━━━━━━━━━━━━━━━┩
+  │ —    │ No upcoming pickups │
+  └──────┴─────────────────────┘
+  
+  '''
+# ---
+# name: test_upcoming_help
+  '''
+                                                                                                      
+   Usage: root upcoming [OPTIONS]                                                                     
+                                                                                                      
+   List the next pickups across all waste types in chronological order.                               
+                                                                                                      
+  ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
+  │ *  --post-code             TEXT                  Postal code of the address                      │
+  │                                                  [env var: TWENTEMILIEU_POST_CODE]               │
+  │                                                  [required]                                      │
+  │ *  --house-number          INTEGER               House number of the address                     │
+  │                                                  [env var: TWENTEMILIEU_HOUSE_NUMBER]            │
+  │                                                  [required]                                      │
+  │    --house-letter          TEXT                  Optional house letter of the address            │
+  │                                                  [env var: TWENTEMILIEU_HOUSE_LETTER]            │
+  │    --limit         -n      INTEGER RANGE [x>=1]  Maximum number of upcoming pickups to show      │
+  │                                                  [default: 5]                                    │
+  │    --json                                        Emit machine-readable JSON output               │
+  │    --help                                        Show this message and exit.                     │
+  ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
+  
+  
+  '''
+# ---
+# name: test_upcoming_json
+  '''
+  [
+    {
+      "date": "2026-04-17",
+      "waste_type": "organic"
+    },
+    {
+      "date": "2026-04-20",
+      "waste_type": "non_recyclable"
+    },
+    {
+      "date": "2026-04-22",
+      "waste_type": "packages"
+    }
+  ]
+  
+  '''
+# ---
+# name: test_upcoming_with_house_letter
+  '''
+  Next 5 pickups for 7531AT 148A 
+  ┏━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━┓
+  ┃ Date       ┃ Waste type     ┃
+  ┡━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━┩
+  │ 2026-04-17 │ Organic (GFT)  │
+  │ 2026-04-20 │ Non-recyclable │
+  │ 2026-04-22 │ Packages (PMD) │
+  │ 2026-04-24 │ Organic (GFT)  │
+  │ 2026-04-28 │ Paper          │
+  └────────────┴────────────────┘
+  
+  '''
+# ---
+# name: test_upcoming_with_limit
+  '''
+   Next 3 pickups for 7531AT 148 
+  ┏━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━┓
+  ┃ Date       ┃ Waste type     ┃
+  ┡━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━┩
+  │ 2026-04-17 │ Organic (GFT)  │
+  │ 2026-04-20 │ Non-recyclable │
+  │ 2026-04-22 │ Packages (PMD) │
+  └────────────┴────────────────┘
+  
+  '''
+# ---

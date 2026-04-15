@@ -53,6 +53,43 @@ if __name__ == "__main__":
     asyncio.run(main())
 ```
 
+## Command-line interface
+
+This package ships with an optional CLI that is handy for quickly
+inspecting the waste pickup schedule for an address. Install it with
+the `cli` extra:
+
+```bash
+pip install "twentemilieu[cli]"
+```
+
+The CLI exposes two commands: `upcoming` (a chronologically sorted list
+of the next pickups across all waste types) and `next` (the single next
+pickup, optionally filtered by waste type). Both commands accept
+`--post-code`, `--house-number`, and an optional `--house-letter`, and
+both support a `--json` flag for machine-readable output.
+
+```bash
+# Show the next 5 pickups across all waste types
+twentemilieu upcoming --post-code 7531AT --house-number 148
+
+# Limit to the next 3 pickups and emit JSON
+twentemilieu upcoming --post-code 7531AT --house-number 148 --limit 3 --json
+
+# Show the very next pickup (any waste type)
+twentemilieu next --post-code 7531AT --house-number 148
+
+# Show the next organic pickup only
+twentemilieu next --post-code 7531AT --house-number 148 --waste-type organic
+
+# Emit as JSON for use in scripts
+twentemilieu next --post-code 7531AT --house-number 148 --waste-type organic --json
+```
+
+Address options can also be supplied via the `TWENTEMILIEU_POST_CODE`,
+`TWENTEMILIEU_HOUSE_NUMBER`, and `TWENTEMILIEU_HOUSE_LETTER` environment
+variables. Run any command with `--help` for the full reference.
+
 ## Changelog & Releases
 
 This repository keeps a change log using [GitHub's releases][releases]
