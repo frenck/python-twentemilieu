@@ -81,6 +81,7 @@ repos:
         name: ⮐  Fix End of Files
         language: system
         types: [text]
+        exclude: ^tests/(?:.*/)?__snapshots__/
         entry: poetry run end-of-file-fixer
         stages: [commit, push, manual]
       - id: ty
@@ -118,12 +119,13 @@ repos:
         name: 🧪 Running tests and test coverage with pytest
         language: system
         types: [python]
-        entry: poetry run pytest
+        entry: poetry run pytest --cov twentemilieu tests
         pass_filenames: false
       - id: trailing-whitespace
         name: ✄  Trim Trailing Whitespace
         language: system
         types: [text]
+        exclude: ^tests/(?:.*/)?__snapshots__/
         entry: poetry run trailing-whitespace-fixer
         stages: [commit, push, manual]
       - id: yamllint

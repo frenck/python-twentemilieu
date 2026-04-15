@@ -7,7 +7,19 @@ maintainers = [{ name = "Franck Nijhof", email = "opensource@frenck.dev" }]
 license = "MIT"
 requires-python = ">=3.11"
 readme = "README.md"
-keywords = ["twente milieu", "afvalkalender", "api", "async", "client"]
+keywords = [
+  "afvalkalender",
+  "api",
+  "async",
+  "client",
+  "garbage",
+  "home-assistant",
+  "netherlands",
+  "pickup",
+  "twente",
+  "twente milieu",
+  "waste",
+]
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Framework :: AsyncIO",
@@ -24,6 +36,12 @@ dynamic = ["dependencies"]
 packages = [{ include = "twentemilieu", from = "src" }]
 dependencies = ['aiohttp (>=3.0.0)', 'yarl (>=1.6.0)']
 
+[project.optional-dependencies]
+cli = ["rich>=13.0.0", "typer>=0.15.1"]
+
+[project.scripts]
+twentemilieu = "twentemilieu._cli:main"
+
 [tool.poetry]
 requires-poetry = '>=2.0'
 
@@ -36,7 +54,7 @@ documentation = "https://github.com/frenck/python-twentemilieu"
 Changelog = "https://github.com/frenck/python-twentemilieu/releases"
 
 [tool.poetry.group.dev.dependencies]
-aresponses = "3.0.0"
+aioresponses = "0.7.8"
 codespell = "2.4.2"
 covdefaults = "2.3.0"
 coverage = { version = "7.13.5", extras = ["toml"] }
@@ -50,6 +68,7 @@ pytest-cov = "7.1.0"
 ruff = "0.15.10"
 safety = "3.7.0"
 syrupy = "5.1.0"
+typer = "0.24.1"
 yamllint = "1.38.0"
 zizmor = "1.24.1"
 
@@ -59,7 +78,11 @@ source = ["twentemilieu"]
 
 [tool.coverage.report]
 show_missing = true
-fail_under = 10
+fail_under = 95
+omit = [
+  "src/twentemilieu/_cli.py",
+  "src/twentemilieu/cli/async_typer.py",
+]
 
 [tool.ty.environment]
 python-version = "3.11"
@@ -83,7 +106,6 @@ ignore-imports = true
 max-line-length = 88
 
 [tool.pytest.ini_options]
-addopts = "--cov"
 asyncio_mode = "auto"
 
 [tool.ruff.lint]

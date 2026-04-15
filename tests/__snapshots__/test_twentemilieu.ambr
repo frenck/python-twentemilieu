@@ -1,0 +1,21 @@
+# serializer version: 1
+# name: test_update
+  dict({
+    <WasteType.NON_RECYCLABLE: 0>: list([
+      datetime.date(2019, 7, 21),
+      datetime.date(2019, 8, 22),
+    ]),
+    <WasteType.ORGANIC: 1>: list([
+      datetime.date(2019, 7, 19),
+      datetime.date(2019, 7, 20),
+    ]),
+    <WasteType.PAPER: 2>: list([
+      datetime.date(2019, 7, 22),
+    ]),
+    <WasteType.TREE: 6>: list([
+    ]),
+    <WasteType.PACKAGES: 10>: list([
+      datetime.date(2019, 7, 23),
+    ]),
+  })
+# ---

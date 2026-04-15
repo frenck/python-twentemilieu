@@ -8,6 +8,7 @@
 
 [![Build Status][build-shield]][build]
 [![Code Coverage][codecov-shield]][codecov]
+[![OpenSSF Scorecard][scorecard-shield]][scorecard]
 [![Open in Dev Containers][devcontainer-shield]][devcontainer]
 
 [![Sponsor Frenck via GitHub Sponsors][github-sponsors-shield]][github-sponsors]
@@ -52,6 +53,73 @@ async def main() -> None:
 if __name__ == "__main__":
     asyncio.run(main())
 ```
+
+## Behavior & error handling
+
+Each API call is a single HTTP POST — the client does **not** retry on
+transient failures. If you need retries with backoff, wrap the calls in
+your own retry loop (or use something like [`backoff`][backoff]).
+
+Requests are bounded by a per-call timeout, which defaults to 10 seconds
+and can be overridden via the `request_timeout` constructor argument:
+
+```python
+async with TwenteMilieu(
+    post_code="1234AB",
+    house_number=1,
+    request_timeout=5,
+) as twente:
+    ...
+```
+
+Cancellation is plain `asyncio`: cancelling the task awaiting
+`unique_id()` or `update()` aborts the in-flight request, and the
+context manager still cleans up the internal session on exit.
+
+All exceptions inherit from `TwenteMilieuError`:
+
+| Exception                     | Raised when                                            |
+| ----------------------------- | ------------------------------------------------------ |
+| `TwenteMilieuConnectionError` | Request timed out or the network / API was unreachable |
+| `TwenteMilieuAddressError`    | The address could not be found in the service area     |
+| `TwenteMilieuError`           | Any other unexpected response from the API             |
+
+## Command-line interface
+
+This package ships with an optional CLI that is handy for quickly
+inspecting the waste pickup schedule for an address. Install it with
+the `cli` extra:
+
+```bash
+pip install "twentemilieu[cli]"
+```
+
+The CLI exposes two commands: `upcoming` (a chronologically sorted list
+of the next pickups across all waste types) and `next` (the single next
+pickup, optionally filtered by waste type). Both commands accept
+`--post-code`, `--house-number`, and an optional `--house-letter`, and
+both support a `--json` flag for machine-readable output.
+
+```bash
+# Show the next 5 pickups across all waste types
+twentemilieu upcoming --post-code 7531AT --house-number 148
+
+# Limit to the next 3 pickups and emit JSON
+twentemilieu upcoming --post-code 7531AT --house-number 148 --limit 3 --json
+
+# Show the very next pickup (any waste type)
+twentemilieu next --post-code 7531AT --house-number 148
+
+# Show the next organic pickup only
+twentemilieu next --post-code 7531AT --house-number 148 --waste-type organic
+
+# Emit as JSON for use in scripts
+twentemilieu next --post-code 7531AT --house-number 148 --waste-type organic --json
+```
+
+Address options can also be supplied via the `TWENTEMILIEU_POST_CODE`,
+`TWENTEMILIEU_HOUSE_NUMBER`, and `TWENTEMILIEU_HOUSE_LETTER` environment
+variables. Run any command with `--help` for the full reference.
 
 ## Changelog & Releases
 
@@ -144,6 +212,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
+[backoff]: https://github.com/litl/backoff
 [build-shield]: https://github.com/frenck/python-twentemilieu/actions/workflows/tests.yaml/badge.svg
 [build]: https://github.com/frenck/python-twentemilieu/actions/workflows/tests.yaml
 [codecov-shield]: https://codecov.io/gh/frenck/python-twentemilieu/branch/main/graph/badge.svg
@@ -167,4 +236,6 @@ SOFTWARE.
 [pypi]: https://pypi.org/project/twentemilieu
 [releases-shield]: https://img.shields.io/github/release/frenck/python-twentemilieu.svg
 [releases]: https://github.com/frenck/python-twentemilieu/releases
+[scorecard-shield]: https://api.scorecard.dev/projects/github.com/frenck/python-twentemilieu/badge
+[scorecard]: https://scorecard.dev/viewer/?uri=github.com/frenck/python-twentemilieu
 [semver]: http://semver.org/spec/v2.0.0.html

@@ -34,25 +34,28 @@ class WasteType(IntEnum):
     PACKAGES = 10
 
     @classmethod
-    def _missing_(cls, value: object) -> WasteType:
+    def _missing_(cls, value: object) -> WasteType | None:
         """Fallback for unknown waste types.
 
-        Some waste types returned from the Twente Milieu API are semantically the same
-        as some types already defined in this enum. This maps the API value to the
-        correct enum value.
+        Some waste types returned from the Twente Milieu API are semantically
+        the same as types already defined in this enum. This maps those API
+        values to the correct enum member.
 
-        An example would be for packages. Some housing has a container for packages,
-        and high-density living may need to place their packages at a central point
-        for pick-up. Both is a pick-up for packages, but their waste type returned
-        from the API are different.
+        An example would be for packages. Some housing has a container for
+        packages, and high-density living may need to place their packages at
+        a central point for pick-up. Both are a pick-up for packages, but the
+        waste type values returned from the API are different.
+
+        For truly unknown integer values we return ``None`` so the standard
+        enum machinery raises ``ValueError``; callers can then skip the entry
+        instead of crashing on an unexpected API value.
 
         """
         if not isinstance(value, int):
             raise TypeError(value)
 
-        return {
-            56: WasteType.PACKAGES,
-        }[value]
+        aliases = {56: WasteType.PACKAGES}
+        return aliases.get(value)
 
 
 @dataclass
@@ -209,7 +212,12 @@ class TwenteMilieu:
         for pickup in response["dataList"]:
             if not pickup["pickupDates"]:
                 continue
-            waste_type = WasteType(pickup["pickupType"])
+            try:
+                waste_type = WasteType(pickup["pickupType"])
+            except ValueError:
+                # Skip waste types not (yet) known to this client so a
+                # newly-introduced API value doesn't crash the whole update.
+                continue
             for pickup_date_raw in pickup["pickupDates"]:
                 pickup_date = (
                     datetime.strptime(

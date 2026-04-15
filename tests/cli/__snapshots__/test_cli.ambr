@@ -1,0 +1,163 @@
+# serializer version: 1
+# name: test_address_error_handler
+  '''
+  ╭─────────────────────────── Address not found ────────────────────────────╮
+  │                                                                          │
+  │     The provided address could not be found in the Twente Milieu service │
+  │     area. Please double-check the postal code and house number (and      │
+  │     optional house letter) and try again.                                │
+  │                                                                          │
+  ╰──────────────────────────────────────────────────────────────────────────╯
+  
+  '''
+# ---
+# name: test_cli_structure
+  dict({
+    'next': list([
+      'house_letter',
+      'house_number',
+      'output_json',
+      'post_code',
+      'waste_type',
+    ]),
+    'upcoming': list([
+      'house_letter',
+      'house_number',
+      'limit',
+      'output_json',
+      'post_code',
+    ]),
+  })
+# ---
+# name: test_connection_error_handler
+  '''
+  ╭──────────────────────── Connection error ─────────────────────────╮
+  │                                                                   │
+  │     Could not connect to the Twente Milieu API. Please check your │
+  │     internet connection and try again.                            │
+  │                                                                   │
+  ╰───────────────────────────────────────────────────────────────────╯
+  
+  '''
+# ---
+# name: test_next
+  '''
+  Next pickup: Organic (GFT) on 2026-04-17
+  
+  '''
+# ---
+# name: test_next_json
+  '''
+  {
+    "date": "2026-04-17",
+    "waste_type": "organic"
+  }
+  
+  '''
+# ---
+# name: test_next_none
+  '''
+  No upcoming pickups scheduled.
+  
+  '''
+# ---
+# name: test_next_none_json
+  '''
+  null
+  
+  '''
+# ---
+# name: test_next_waste_type_none
+  '''
+  No upcoming tree pickup scheduled.
+  
+  '''
+# ---
+# name: test_next_with_waste_type
+  '''
+  Next pickup: Organic (GFT) on 2026-04-17
+  
+  '''
+# ---
+# name: test_next_with_waste_type_json
+  '''
+  {
+    "date": "2026-04-28",
+    "waste_type": "paper"
+  }
+  
+  '''
+# ---
+# name: test_upcoming
+  '''
+   Next 5 pickups for 7531AT 148 
+  ┏━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━┓
+  ┃ Date       ┃ Waste type     ┃
+  ┡━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━┩
+  │ 2026-04-17 │ Organic (GFT)  │
+  │ 2026-04-20 │ Non-recyclable │
+  │ 2026-04-22 │ Packages (PMD) │
+  │ 2026-04-24 │ Organic (GFT)  │
+  │ 2026-04-28 │ Paper          │
+  └────────────┴────────────────┘
+  
+  '''
+# ---
+# name: test_upcoming_empty
+  '''
+  Next 5 pickups for 7531AT 148 
+  ┏━━━━━━┳━━━━━━━━━━━━━━━━━━━━━┓
+  ┃ Date ┃ Waste type          ┃
+  ┡━━━━━━╇━━━━━━━━━━━━━━━━━━━━━┩
+  │ —    │ No upcoming pickups │
+  └──────┴─────────────────────┘
+  
+  '''
+# ---
+# name: test_upcoming_json
+  '''
+  [
+    {
+      "date": "2026-04-17",
+      "waste_type": "organic"
+    },
+    {
+      "date": "2026-04-20",
+      "waste_type": "non_recyclable"
+    },
+    {
+      "date": "2026-04-22",
+      "waste_type": "packages"
+    }
+  ]
+  
+  '''
+# ---
+# name: test_upcoming_with_house_letter
+  '''
+  Next 5 pickups for 7531AT 148A 
+  ┏━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━┓
+  ┃ Date       ┃ Waste type     ┃
+  ┡━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━┩
+  │ 2026-04-17 │ Organic (GFT)  │
+  │ 2026-04-20 │ Non-recyclable │
+  │ 2026-04-22 │ Packages (PMD) │
+  │ 2026-04-24 │ Organic (GFT)  │
+  │ 2026-04-28 │ Paper          │
+  └────────────┴────────────────┘
+  
+  '''
+# ---
+# name: test_upcoming_with_limit
+  '''
+   Next 3 pickups for 7531AT 148 
+  ┏━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━┓
+  ┃ Date       ┃ Waste type     ┃
+  ┡━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━┩
+  │ 2026-04-17 │ Organic (GFT)  │
+  │ 2026-04-20 │ Non-recyclable │
+  │ 2026-04-22 │ Packages (PMD) │
+  └────────────┴────────────────┘
+  
+  '''
+# ---
