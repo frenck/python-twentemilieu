@@ -8,7 +8,6 @@
 
 [![Build Status][build-shield]][build]
 [![Code Coverage][codecov-shield]][codecov]
-[![Quality Gate Status][sonarcloud-shield]][sonarcloud]
 [![Open in Dev Containers][devcontainer-shield]][devcontainer]
 
 [![Sponsor Frenck via GitHub Sponsors][github-sponsors-shield]][github-sponsors]
@@ -47,7 +46,7 @@ async def main() -> None:
         unique_id = await twente.unique_id()
         print("Unique Address ID:", unique_id)
         pickups = await twente.update()
-        print("Next pickup for Non-recyclable:", pickup.get(WasteType.NON_RECYCLABLE))
+        print("Next pickup for Non-recyclable:", pickups.get(WasteType.NON_RECYCLABLE))
 
 
 if __name__ == "__main__":
@@ -91,7 +90,7 @@ You need at least:
 
 - Python 3.11+
 - [Poetry][poetry-install]
-- NodeJS 20+ (including NPM)
+- NodeJS 24+ (including NPM)
 
 To install all packages, including all development requirements:
 
@@ -100,12 +99,12 @@ npm install
 poetry install
 ```
 
-As this repository uses the [pre-commit][pre-commit] framework, all changes
+As this repository uses the [prek][prek] framework, all changes
 are linted and tested with each commit. You can run all checks and tests
 manually, using the following command:
 
 ```bash
-poetry run pre-commit run --all-files
+poetry run prek run --all-files
 ```
 
 To run just the Python tests:
@@ -125,7 +124,7 @@ check [the contributor's page][contributors].
 
 MIT License
 
-Copyright (c) 2019-2025 Franck Nijhof
+Copyright (c) 2019-2026 Franck Nijhof
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -157,17 +156,15 @@ SOFTWARE.
 [github-sponsors]: https://github.com/sponsors/frenck
 [keepchangelog]: http://keepachangelog.com/en/1.0.0/
 [license-shield]: https://img.shields.io/github/license/frenck/python-twentemilieu.svg
-[maintenance-shield]: https://img.shields.io/maintenance/yes/2025.svg
+[maintenance-shield]: https://img.shields.io/maintenance/yes/2026.svg
 [patreon-shield]: https://frenck.dev/wp-content/uploads/2019/12/patreon.png
 [patreon]: https://www.patreon.com/frenck
 [poetry-install]: https://python-poetry.org/docs/#installation
 [poetry]: https://python-poetry.org
-[pre-commit]: https://pre-commit.com/
+[prek]: https://github.com/j178/prek
 [project-stage-shield]: https://img.shields.io/badge/project%20stage-production%20ready-brightgreen.svg
 [python-versions-shield]: https://img.shields.io/pypi/pyversions/twentemilieu
 [pypi]: https://pypi.org/project/twentemilieu
 [releases-shield]: https://img.shields.io/github/release/frenck/python-twentemilieu.svg
 [releases]: https://github.com/frenck/python-twentemilieu/releases
 [semver]: http://semver.org/spec/v2.0.0.html
-[sonarcloud-shield]: https://sonarcloud.io/api/project_badges/measure?project=frenck_python-twentemilieu&metric=alert_status
-[sonarcloud]: https://sonarcloud.io/summary/new_code?id=frenck_python-twentemilieu
