@@ -190,6 +190,10 @@ jobs:
           node-version-file: ".nvmrc"
           cache: "npm"
       - name: 🏗 Install NPM dependencies
+        # Versions are locked via package-lock.json; Scorecard's
+        # Pinned-Dependencies check still scores this 9/10 because npm
+        # commands can't be hash-pinned the way GitHub Actions can.
+        # Accepted trade-off.
         run: npm install
       - name: 🚀 Run prettier
         run: poetry run prek run prettier --all-files
