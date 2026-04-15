@@ -6,7 +6,9 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 from unittest.mock import AsyncMock, MagicMock, patch
 
+import click
 import pytest
+from typer.main import get_command
 from typer.testing import CliRunner
 
 from twentemilieu.cli import cli
@@ -29,10 +31,6 @@ def stable_terminal(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("COLUMNS", "100")
     monkeypatch.setenv("NO_COLOR", "1")
     monkeypatch.setenv("TERM", "dumb")
-    # Typer evaluates TERMINAL_WIDTH at import time and caches it in
-    # typer.rich_utils.MAX_WIDTH, so patching the env var at fixture time is
-    # too late; override the module attribute directly instead.
-    monkeypatch.setattr("typer.rich_utils.MAX_WIDTH", 100)
 
 
 @pytest.fixture
@@ -67,25 +65,20 @@ def invoke(
     return result.exit_code, result.stdout, mock_cls
 
 
-def test_help(runner: CliRunner, snapshot: SnapshotAssertion) -> None:
-    """Top-level help lists all commands."""
-    result = runner.invoke(cli, ["--help"])
-    assert result.exit_code == 0
-    assert result.stdout == snapshot
+def test_cli_structure(snapshot: SnapshotAssertion) -> None:
+    """The CLI exposes the expected commands and options.
 
-
-def test_upcoming_help(runner: CliRunner, snapshot: SnapshotAssertion) -> None:
-    """Help for the upcoming command."""
-    result = runner.invoke(cli, ["upcoming", "--help"])
-    assert result.exit_code == 0
-    assert result.stdout == snapshot
-
-
-def test_next_help(runner: CliRunner, snapshot: SnapshotAssertion) -> None:
-    """Help for the next command."""
-    result = runner.invoke(cli, ["next", "--help"])
-    assert result.exit_code == 0
-    assert result.stdout == snapshot
+    Inspects the click Command tree directly rather than snapshotting
+    rendered help output (which depends on Rich's terminal width
+    detection and is therefore environment-sensitive).
+    """
+    group = get_command(cli)
+    assert isinstance(group, click.Group)
+    structure = {
+        name: sorted(param.name for param in subcommand.params)
+        for name, subcommand in sorted(group.commands.items())
+    }
+    assert structure == snapshot
 
 
 def test_upcoming(

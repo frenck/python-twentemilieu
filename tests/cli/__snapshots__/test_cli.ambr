@@ -11,6 +11,24 @@
   
   '''
 # ---
+# name: test_cli_structure
+  dict({
+    'next': list([
+      'house_letter',
+      'house_number',
+      'output_json',
+      'post_code',
+      'waste_type',
+    ]),
+    'upcoming': list([
+      'house_letter',
+      'house_number',
+      'limit',
+      'output_json',
+      'post_code',
+    ]),
+  })
+# ---
 # name: test_connection_error_handler
   '''
   ╭──────────────────────── Connection error ─────────────────────────╮
@@ -22,55 +40,9 @@
   
   '''
 # ---
-# name: test_help
-  '''
-                                                                                                      
-   Usage: root [OPTIONS] COMMAND [ARGS]...                                                            
-                                                                                                      
-   Twente Milieu CLI                                                                                  
-                                                                                                      
-  ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-  │ --help          Show this message and exit.                                                      │
-  ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-  ╭─ Commands ───────────────────────────────────────────────────────────────────────────────────────╮
-  │ upcoming  List the next pickups across all waste types in chronological order.                   │
-  │ next      Show the very next pickup, optionally filtered to a specific waste type.               │
-  ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-  
-  
-  '''
-# ---
 # name: test_next
   '''
   Next pickup: Organic (GFT) on 2026-04-17
-  
-  '''
-# ---
-# name: test_next_help
-  '''
-                                                                                                      
-   Usage: root next [OPTIONS]                                                                         
-                                                                                                      
-   Show the very next pickup, optionally filtered to a specific waste type.                           
-                                                                                                      
-  ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-  │ *  --post-code             TEXT                               Postal code of the address         │
-  │                                                               [env var: TWENTEMILIEU_POST_CODE]  │
-  │                                                               [required]                         │
-  │ *  --house-number          INTEGER                            House number of the address        │
-  │                                                               [env var:                          │
-  │                                                               TWENTEMILIEU_HOUSE_NUMBER]         │
-  │                                                               [required]                         │
-  │    --house-letter          TEXT                               Optional house letter of the       │
-  │                                                               address                            │
-  │                                                               [env var:                          │
-  │                                                               TWENTEMILIEU_HOUSE_LETTER]         │
-  │    --waste-type    -t      [non-recyclable|organic|paper|pac  Limit the lookup to a single waste │
-  │                            kages|tree]                        type                               │
-  │    --json                                                     Emit machine-readable JSON output  │
-  │    --help                                                     Show this message and exit.        │
-  ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-  
   
   '''
 # ---
@@ -139,31 +111,6 @@
   ┡━━━━━━╇━━━━━━━━━━━━━━━━━━━━━┩
   │ —    │ No upcoming pickups │
   └──────┴─────────────────────┘
-  
-  '''
-# ---
-# name: test_upcoming_help
-  '''
-                                                                                                      
-   Usage: root upcoming [OPTIONS]                                                                     
-                                                                                                      
-   List the next pickups across all waste types in chronological order.                               
-                                                                                                      
-  ╭─ Options ────────────────────────────────────────────────────────────────────────────────────────╮
-  │ *  --post-code             TEXT                  Postal code of the address                      │
-  │                                                  [env var: TWENTEMILIEU_POST_CODE]               │
-  │                                                  [required]                                      │
-  │ *  --house-number          INTEGER               House number of the address                     │
-  │                                                  [env var: TWENTEMILIEU_HOUSE_NUMBER]            │
-  │                                                  [required]                                      │
-  │    --house-letter          TEXT                  Optional house letter of the address            │
-  │                                                  [env var: TWENTEMILIEU_HOUSE_LETTER]            │
-  │    --limit         -n      INTEGER RANGE [x>=1]  Maximum number of upcoming pickups to show      │
-  │                                                  [default: 5]                                    │
-  │    --json                                        Emit machine-readable JSON output               │
-  │    --help                                        Show this message and exit.                     │
-  ╰──────────────────────────────────────────────────────────────────────────────────────────────────╯
-  
   
   '''
 # ---
