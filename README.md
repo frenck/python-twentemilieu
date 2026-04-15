@@ -8,6 +8,7 @@
 
 [![Build Status][build-shield]][build]
 [![Code Coverage][codecov-shield]][codecov]
+[![OpenSSF Scorecard][scorecard-shield]][scorecard]
 [![Open in Dev Containers][devcontainer-shield]][devcontainer]
 
 [![Sponsor Frenck via GitHub Sponsors][github-sponsors-shield]][github-sponsors]
@@ -235,4 +236,6 @@ SOFTWARE.
 [pypi]: https://pypi.org/project/twentemilieu
 [releases-shield]: https://img.shields.io/github/release/frenck/python-twentemilieu.svg
 [releases]: https://github.com/frenck/python-twentemilieu/releases
+[scorecard-shield]: https://api.scorecard.dev/projects/github.com/frenck/python-twentemilieu/badge
+[scorecard]: https://scorecard.dev/viewer/?uri=github.com/frenck/python-twentemilieu
 [semver]: http://semver.org/spec/v2.0.0.html
