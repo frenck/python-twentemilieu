@@ -2644,9 +2644,9 @@ files = [
 ]
 
 [extras]
-cli = ["typer"]
+cli = ["rich", "typer"]
 
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11"
-content-hash = "8b4d6d60615f95faa94e6e57ddca8e910e5a9c69b20d1d6dd58406c12afd8872"
+content-hash = "a8e174ba537c8d278541957359d5d01da7d7c4d7779bf7a911005d2ec534419b"

@@ -1,4 +1,4 @@
-"""Asynchronous Python client for Peblar EV chargers.
+"""Async-capable Typer wrapper used by the Twente Milieu CLI.
 
 Adaptation of the snippet/code from:
 - https://github.com/tiangolo/typer/issues/88#issuecomment-1613013597

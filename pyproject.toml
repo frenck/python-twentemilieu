@@ -37,10 +37,10 @@ packages = [{ include = "twentemilieu", from = "src" }]
 dependencies = ['aiohttp (>=3.0.0)', 'yarl (>=1.6.0)']
 
 [project.optional-dependencies]
-cli = ["typer>=0.15.1"]
+cli = ["rich>=13.0.0", "typer>=0.15.1"]
 
 [project.scripts]
-twentemilieu = "twentemilieu.cli:cli"
+twentemilieu = "twentemilieu._cli:main"
 
 [tool.poetry]
 requires-poetry = '>=2.0'
@@ -79,7 +79,10 @@ source = ["twentemilieu"]
 [tool.coverage.report]
 show_missing = true
 fail_under = 95
-omit = ["src/twentemilieu/cli/async_typer.py"]
+omit = [
+  "src/twentemilieu/_cli.py",
+  "src/twentemilieu/cli/async_typer.py",
+]
 
 [tool.ty.environment]
 python-version = "3.11"
