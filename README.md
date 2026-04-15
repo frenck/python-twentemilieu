@@ -144,8 +144,8 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-[build-shield]: https://github.com/frenck/python-twentemilieu/workflows/Continuous%20Integration/badge.svg
-[build]: https://github.com/frenck/python-twentemilieu/actions
+[build-shield]: https://github.com/frenck/python-twentemilieu/actions/workflows/tests.yaml/badge.svg
+[build]: https://github.com/frenck/python-twentemilieu/actions/workflows/tests.yaml
 [codecov-shield]: https://codecov.io/gh/frenck/python-twentemilieu/branch/main/graph/badge.svg
 [codecov]: https://codecov.io/gh/frenck/python-twentemilieu
 [contributors]: https://github.com/frenck/python-twentemilieu/graphs/contributors
