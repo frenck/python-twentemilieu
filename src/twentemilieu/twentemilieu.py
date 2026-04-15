@@ -5,6 +5,7 @@ from __future__ import annotations
 import asyncio
 import json
 import socket
+from dataclasses import dataclass, field
 from datetime import date, datetime, timedelta
 from enum import IntEnum
 from typing import Any, Self
@@ -12,7 +13,6 @@ from zoneinfo import ZoneInfo
 
 import aiohttp
 from aiohttp.client import ClientSession
-from attr import dataclass
 from yarl import URL
 
 from .exceptions import (
@@ -68,8 +68,8 @@ class TwenteMilieu:
     request_timeout: int = 10
     session: ClientSession | None = None
 
-    _close_session: bool = False
-    _unique_id: int | None = None
+    _close_session: bool = field(default=False, init=False)
+    _unique_id: int | None = field(default=None, init=False)
 
     async def _request(self, uri: str, *, data: dict[str, Any] | None = None) -> Any:
         """Handle a request to the Twente Milieu API.
@@ -119,7 +119,7 @@ class TwenteMilieu:
                     headers=headers,
                     ssl=True,
                 )
-        except asyncio.TimeoutError as exception:
+        except TimeoutError as exception:
             msg = "Timeout occurred while connecting to Twente Milieu API."
             raise TwenteMilieuConnectionError(msg) from exception
         except (aiohttp.ClientError, socket.gaierror) as exception:
