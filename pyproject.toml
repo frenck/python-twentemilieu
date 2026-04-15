@@ -7,7 +7,19 @@ maintainers = [{ name = "Franck Nijhof", email = "opensource@frenck.dev" }]
 license = "MIT"
 requires-python = ">=3.11"
 readme = "README.md"
-keywords = ["twente milieu", "afvalkalender", "api", "async", "client"]
+keywords = [
+  "afvalkalender",
+  "api",
+  "async",
+  "client",
+  "garbage",
+  "home-assistant",
+  "netherlands",
+  "pickup",
+  "twente",
+  "twente milieu",
+  "waste",
+]
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Framework :: AsyncIO",
@@ -42,7 +54,7 @@ documentation = "https://github.com/frenck/python-twentemilieu"
 Changelog = "https://github.com/frenck/python-twentemilieu/releases"
 
 [tool.poetry.group.dev.dependencies]
-aresponses = "3.0.0"
+aioresponses = "0.7.8"
 codespell = "2.4.2"
 covdefaults = "2.3.0"
 coverage = { version = "7.13.5", extras = ["toml"] }
@@ -66,7 +78,7 @@ source = ["twentemilieu"]
 
 [tool.coverage.report]
 show_missing = true
-fail_under = 10
+fail_under = 95
 omit = ["src/twentemilieu/cli/async_typer.py"]
 
 [tool.ty.environment]

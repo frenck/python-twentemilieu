@@ -3,15 +3,13 @@
 from __future__ import annotations
 
 # pylint: disable=protected-access,redefined-outer-name
-import asyncio
-import json
 import socket
 from typing import TYPE_CHECKING, Any
 from unittest.mock import patch
 
 import aiohttp
 import pytest
-from aresponses import Response, ResponsesMockServer
+from aioresponses import aioresponses
 
 from twentemilieu import TwenteMilieu, WasteType
 from twentemilieu.exceptions import (
@@ -21,11 +19,14 @@ from twentemilieu.exceptions import (
 )
 
 if TYPE_CHECKING:
-    from collections.abc import AsyncIterator
+    from collections.abc import AsyncIterator, Callable
 
     from syrupy.assertion import SnapshotAssertion
 
-API_HOST = "twentemilieuapi.ximmio.com"
+API_BASE = "https://twentemilieuapi.ximmio.com/api/"
+API_URL = API_BASE
+API_FETCH_ADDRESS = API_BASE + "FetchAdress"
+API_GET_CALENDAR = API_BASE + "GetCalendar"
 
 
 @pytest.fixture
@@ -41,108 +42,94 @@ async def twente() -> AsyncIterator[TwenteMilieu]:
         await client.close()
 
 
-async def test_json_request(
-    aresponses: ResponsesMockServer,
-    twente: TwenteMilieu,
-) -> None:
+async def test_json_request(twente: TwenteMilieu) -> None:
     """Test JSON response is handled correctly."""
-    aresponses.add(
-        API_HOST,
-        "/api/",
-        "POST",
-        aresponses.Response(
+    with aioresponses() as mocked:
+        mocked.post(
+            API_URL,
             status=200,
-            headers={"Content-Type": "application/json"},
-            text='{"status": "ok"}',
-        ),
-    )
-    response = await twente._request("")
-    assert response["status"] == "ok"
+            payload={"status": "ok"},
+        )
+        response = await twente._request("")
+        assert response["status"] == "ok"
 
 
 async def test_wastetype_fallback() -> None:
     """Test the WasteType fallback is handled correctly."""
+    # Known alias for high-density packages pickup points.
     assert WasteType(56) == WasteType.PACKAGES, (
         "Fallback for high-density packages not handled!"
     )
 
+    # Unknown integer values must raise ValueError rather than KeyError
+    # so callers can catch and skip forward-compatibly.
+    with pytest.raises(ValueError, match="is not a valid WasteType"):
+        WasteType(999)
+
+    # Non-integer values still raise TypeError from the _missing_ hook.
     with pytest.raises(TypeError):
         WasteType._missing_("wrong_type")
 
 
-async def test_internal_session(aresponses: ResponsesMockServer) -> None:
+async def test_internal_session() -> None:
     """Test the TwenteMilieu client manages its own session as a context manager."""
-    aresponses.add(
-        API_HOST,
-        "/api/",
-        "POST",
-        aresponses.Response(
+    with aioresponses() as mocked:
+        mocked.post(
+            API_URL,
             status=200,
-            headers={"Content-Type": "application/json"},
-            text='{"status": "ok"}',
-        ),
-    )
-    async with TwenteMilieu(post_code="1234AB", house_number=1) as client:
-        response = await client._request("")
-        assert response["status"] == "ok"
-
-
-async def test_timeout(aresponses: ResponsesMockServer) -> None:
-    """Test request timeout from Twente Milieu."""
-
-    # Faking a timeout by sleeping
-    async def response_handler(_: aiohttp.ClientResponse) -> Response:
-        await asyncio.sleep(2)
-        return aresponses.Response(body="Good morning!")
-
-    aresponses.add(API_HOST, "/api/", "POST", response_handler)
-
-    async with aiohttp.ClientSession() as session:
-        client = TwenteMilieu(
-            post_code="1234AB",
-            house_number=1,
-            session=session,
-            request_timeout=1,
+            payload={"status": "ok"},
         )
+        async with TwenteMilieu(post_code="1234AB", house_number=1) as client:
+            response = await client._request("")
+            assert response["status"] == "ok"
+
+
+async def test_timeout(twente: TwenteMilieu) -> None:
+    """Test request timeout from Twente Milieu."""
+    twente.request_timeout = 1
+    with aioresponses() as mocked:
+        mocked.post(API_URL, exception=TimeoutError())
         with pytest.raises(TwenteMilieuConnectionError):
-            assert await client._request("")
+            await twente._request("")
+
+
+def _mock_http_4xx_plaintext(mocked: aioresponses) -> None:
+    mocked.post(API_URL, status=404, body="OMG PUPPIES!", content_type="text/plain")
+
+
+def _mock_http_5xx_json(mocked: aioresponses) -> None:
+    mocked.post(
+        API_URL,
+        status=500,
+        body=b'{"status":"nok"}',
+        content_type="application/json",
+    )
+
+
+def _mock_200_unexpected_content_type(mocked: aioresponses) -> None:
+    mocked.post(API_URL, status=200, body="OMG PUPPIES!", content_type="text/plain")
 
 
 @pytest.mark.parametrize(
-    "response_kwargs",
+    "setup_mock",
     [
+        pytest.param(_mock_http_4xx_plaintext, id="http_4xx_plaintext"),
+        pytest.param(_mock_http_5xx_json, id="http_5xx_json"),
         pytest.param(
-            {"text": "OMG PUPPIES!", "status": 404},
-            id="http_4xx_plaintext",
-        ),
-        pytest.param(
-            {
-                "body": b'{"status":"nok"}',
-                "status": 500,
-                "headers": {"Content-Type": "application/json"},
-            },
-            id="http_5xx_json",
-        ),
-        pytest.param(
-            {"text": "OMG PUPPIES!", "status": 200},
+            _mock_200_unexpected_content_type,
             id="200_unexpected_content_type",
         ),
     ],
 )
 async def test_request_errors(
-    aresponses: ResponsesMockServer,
     twente: TwenteMilieu,
-    response_kwargs: dict[str, Any],
+    setup_mock: Callable[[aioresponses], None],
 ) -> None:
     """Test bad API responses raise TwenteMilieuError."""
-    aresponses.add(
-        API_HOST,
-        "/api/",
-        "POST",
-        aresponses.Response(**response_kwargs),
-    )
-    with pytest.raises(TwenteMilieuError):
-        await twente._request("")
+    with aioresponses() as mocked:
+        setup_mock(mocked)
+        with pytest.raises(TwenteMilieuError):
+            await twente._request("")
 
 
 async def test_communication_error(twente: TwenteMilieu) -> None:
@@ -154,73 +141,48 @@ async def test_communication_error(twente: TwenteMilieu) -> None:
         await twente._request("")
 
 
-async def test_unique_id(
-    aresponses: ResponsesMockServer,
-    twente: TwenteMilieu,
-) -> None:
+async def test_unique_id(twente: TwenteMilieu) -> None:
     """Test request of a unique address identifier."""
-    aresponses.add(
-        API_HOST,
-        "/api/FetchAdress",
-        "POST",
-        aresponses.Response(
+    with aioresponses() as mocked:
+        mocked.post(
+            API_FETCH_ADDRESS,
             status=200,
-            headers={"Content-Type": "application/json"},
-            text='{"dataList": [{"UniqueId": "12345"}]}',
-        ),
-    )
-    unique_id = await twente.unique_id()
-    assert unique_id == "12345"
-    unique_id = await twente.unique_id()
-    assert unique_id == "12345"
+            payload={"dataList": [{"UniqueId": "12345"}]},
+        )
+        unique_id = await twente.unique_id()
+        assert unique_id == "12345"
+        unique_id = await twente.unique_id()
+        assert unique_id == "12345"
 
 
-async def test_invalid_address(
-    aresponses: ResponsesMockServer,
-    twente: TwenteMilieu,
-) -> None:
+async def test_invalid_address(twente: TwenteMilieu) -> None:
     """Test request of invalid address information."""
-    aresponses.add(
-        API_HOST,
-        "/api/FetchAdress",
-        "POST",
-        aresponses.Response(
+    with aioresponses() as mocked:
+        mocked.post(
+            API_FETCH_ADDRESS,
             status=200,
-            headers={"Content-Type": "application/json"},
-            text='{"dataList": []}',
-        ),
-    )
-    with pytest.raises(TwenteMilieuAddressError):
-        await twente.unique_id()
+            payload={"dataList": []},
+        )
+        with pytest.raises(TwenteMilieuAddressError):
+            await twente.unique_id()
 
 
 async def test_update(
-    aresponses: ResponsesMockServer,
     twente: TwenteMilieu,
     calendar_response: Any,
     snapshot: SnapshotAssertion,
 ) -> None:
     """Test request for updating data from Twente Milieu."""
-    aresponses.add(
-        API_HOST,
-        "/api/FetchAdress",
-        "POST",
-        aresponses.Response(
+    with aioresponses() as mocked:
+        mocked.post(
+            API_FETCH_ADDRESS,
             status=200,
-            headers={"Content-Type": "application/json"},
-            text='{"dataList": [{"UniqueId": "12345"}]}',
-        ),
-    )
-    aresponses.add(
-        API_HOST,
-        "/api/GetCalendar",
-        "POST",
-        aresponses.Response(
+            payload={"dataList": [{"UniqueId": "12345"}]},
+        )
+        mocked.post(
+            API_GET_CALENDAR,
             status=200,
-            headers={"Content-Type": "application/json"},
-            text=json.dumps(calendar_response),
-        ),
-    )
-
-    pickups = await twente.update()
-    assert pickups == snapshot
+            payload=calendar_response,
+        )
+        pickups = await twente.update()
+        assert pickups == snapshot

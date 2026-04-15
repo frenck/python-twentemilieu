@@ -53,6 +53,36 @@ if __name__ == "__main__":
     asyncio.run(main())
 ```
 
+## Behavior & error handling
+
+Each API call is a single HTTP POST — the client does **not** retry on
+transient failures. If you need retries with backoff, wrap the calls in
+your own retry loop (or use something like [`backoff`][backoff]).
+
+Requests are bounded by a per-call timeout, which defaults to 10 seconds
+and can be overridden via the `request_timeout` constructor argument:
+
+```python
+async with TwenteMilieu(
+    post_code="1234AB",
+    house_number=1,
+    request_timeout=5,
+) as twente:
+    ...
+```
+
+Cancellation is plain `asyncio`: cancelling the task awaiting
+`unique_id()` or `update()` aborts the in-flight request, and the
+context manager still cleans up the internal session on exit.
+
+All exceptions inherit from `TwenteMilieuError`:
+
+| Exception                     | Raised when                                            |
+| ----------------------------- | ------------------------------------------------------ |
+| `TwenteMilieuConnectionError` | Request timed out or the network / API was unreachable |
+| `TwenteMilieuAddressError`    | The address could not be found in the service area     |
+| `TwenteMilieuError`           | Any other unexpected response from the API             |
+
 ## Command-line interface
 
 This package ships with an optional CLI that is handy for quickly
@@ -181,6 +211,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
+[backoff]: https://github.com/litl/backoff
 [build-shield]: https://github.com/frenck/python-twentemilieu/actions/workflows/tests.yaml/badge.svg
 [build]: https://github.com/frenck/python-twentemilieu/actions/workflows/tests.yaml
 [codecov-shield]: https://codecov.io/gh/frenck/python-twentemilieu/branch/main/graph/badge.svg

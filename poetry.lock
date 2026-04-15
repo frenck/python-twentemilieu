@@ -155,6 +155,22 @@ yarl = ">=1.17.0,<2.0"
 speedups = ["Brotli (>=1.2) ; platform_python_implementation == \"CPython\"", "aiodns (>=3.3.0)", "backports.zstd ; platform_python_implementation == \"CPython\" and python_version < \"3.14\"", "brotlicffi (>=1.2) ; platform_python_implementation != \"CPython\""]
 
 [[package]]
+name = "aioresponses"
+version = "0.7.8"
+description = "Mock out requests made by ClientSession from aiohttp package"
+optional = false
+python-versions = "*"
+groups = ["dev"]
+files = [
+    {file = "aioresponses-0.7.8-py2.py3-none-any.whl", hash = "sha256:b73bd4400d978855e55004b23a3a84cb0f018183bcf066a85ad392800b5b9a94"},
+    {file = "aioresponses-0.7.8.tar.gz", hash = "sha256:b861cdfe5dc58f3b8afac7b0a6973d5d7b2cb608dd0f6253d16b8ee8eaf6df11"},
+]
+
+[package.dependencies]
+aiohttp = ">=3.3.0,<4.0.0"
+packaging = ">=22.0"
+
+[[package]]
 name = "aiosignal"
 version = "1.4.0"
 description = "aiosignal: a list of registered asynchronous callbacks"
@@ -213,25 +229,6 @@ typing_extensions = {version = ">=4.5", markers = "python_version < \"3.13\""}
 
 [package.extras]
 trio = ["trio (>=0.32.0)"]
-
-[[package]]
-name = "aresponses"
-version = "3.0.0"
-description = "Asyncio response mocking. Similar to the responses library used for 'requests'"
-optional = false
-python-versions = ">=3.7"
-groups = ["dev"]
-files = [
-    {file = "aresponses-3.0.0-py3-none-any.whl", hash = "sha256:8093ab4758eb4aba91c765a50295b269ecfc0a9e7c7158954760bc0c23503970"},
-    {file = "aresponses-3.0.0.tar.gz", hash = "sha256:8731d0609fe4c954e21f17753dc868dca9e2e002b020a33dc9212004599b11e7"},
-]
-
-[package.dependencies]
-aiohttp = [
-    {version = ">=3.7.0,<3.8.dev0 || >=3.9.dev0", markers = "python_version >= \"3.12\""},
-    {version = ">=3.7.0", markers = "python_version >= \"3.10\" and python_version < \"3.12\""},
-]
-pytest-asyncio = {version = ">=0.17.0", markers = "python_version >= \"3.7\""}
 
 [[package]]
 name = "astroid"
@@ -2652,4 +2649,4 @@ cli = ["typer"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11"
-content-hash = "3aff75b168e67514b6b568792793af4b5fe5bae57e0937cda54f75efba4d4d72"
+content-hash = "8b4d6d60615f95faa94e6e57ddca8e910e5a9c69b20d1d6dd58406c12afd8872"
