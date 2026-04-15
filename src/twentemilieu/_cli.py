@@ -8,6 +8,8 @@ dependencies (``typer``, ``rich``) are missing we raise a friendly
 
 from __future__ import annotations
 
+_CLI_EXTRA_MODULES = frozenset({"typer", "rich"})
+
 
 def main() -> None:
     """Invoke the Typer CLI with a graceful error if extras are missing."""
@@ -17,6 +19,15 @@ def main() -> None:
         # pylint: disable-next=import-outside-toplevel
         from twentemilieu.cli import cli  # noqa: PLC0415
     except ModuleNotFoundError as err:  # pragma: no cover
+        # Only convert to a friendly install hint when the *optional* deps
+        # are missing. Anything else (e.g. a renamed internal module) must
+        # still surface as a real error for debugging.
+        # pylint chokes on the type of ModuleNotFoundError.name, so silence
+        # the spurious no-member warning on the split() call below.
+        missing_module: str = err.name or ""
+        missing_root = missing_module.split(".", 1)[0]  # pylint: disable=no-member
+        if missing_root not in _CLI_EXTRA_MODULES:
+            raise
         msg = (
             "The Twente Milieu CLI requires the 'cli' extra. "
             "Install it with: pip install 'twentemilieu[cli]'"

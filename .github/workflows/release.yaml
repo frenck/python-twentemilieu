@@ -55,8 +55,13 @@ jobs:
         run: poetry build --no-interaction
       - name: 🧭 Locate built wheel
         run: |
-          WHEEL_PATH=$(ls dist/twentemilieu-*-py3-none-any.whl)
-          echo "WHEEL_PATH=${WHEEL_PATH}" >> "${GITHUB_ENV}"
+          shopt -s failglob
+          wheels=(dist/twentemilieu-*-py3-none-any.whl)
+          if (( ${#wheels[@]} != 1 )); then
+            echo "::error::Expected exactly one wheel in dist/, found ${#wheels[@]}"
+            exit 1
+          fi
+          echo "WHEEL_PATH=${wheels[0]}" >> "${GITHUB_ENV}"
       - name: 📝 Generate CycloneDX SBOM
         uses: anchore/sbom-action@e22c389904149dbc22b58101806040fa8d37a610 # v0.24.0
         with:
