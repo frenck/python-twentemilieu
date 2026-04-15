@@ -29,6 +29,10 @@ def stable_terminal(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("COLUMNS", "100")
     monkeypatch.setenv("NO_COLOR", "1")
     monkeypatch.setenv("TERM", "dumb")
+    # Typer evaluates TERMINAL_WIDTH at import time and caches it in
+    # typer.rich_utils.MAX_WIDTH, so patching the env var at fixture time is
+    # too late; override the module attribute directly instead.
+    monkeypatch.setattr("typer.rich_utils.MAX_WIDTH", 100)
 
 
 @pytest.fixture
