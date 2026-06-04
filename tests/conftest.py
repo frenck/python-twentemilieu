@@ -4,15 +4,19 @@ from __future__ import annotations
 
 import json
 from datetime import date
+from inspect import signature
 from pathlib import Path
 from types import SimpleNamespace
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import aiohttp
 import pytest
 from aioresponses import core as aioresponses_core
 
 from twentemilieu import WasteType
+
+if TYPE_CHECKING:
+    from collections.abc import Generator
 
 FIXTURES_DIR = Path(__file__).parent / "fixtures"
 
@@ -25,10 +29,10 @@ _PICKUP_KEY_TO_WASTE_TYPE: dict[str, WasteType] = {
 }
 
 AIOHTTP_REQUIRES_STREAM_WRITER = (
-    "stream_writer" in aiohttp.ClientResponse.__init__.__code__.co_varnames
+    "stream_writer" in signature(aiohttp.ClientResponse.__init__).parameters
 )
 
-AIOHTTP_STREAM_WRITER = SimpleNamespace(output_size=0)
+AIOHTTP_STREAM_WRITER_COMPAT = SimpleNamespace(output_size=0)
 
 
 class AioresponsesClientResponse(aioresponses_core.ClientResponse):
@@ -36,21 +40,26 @@ class AioresponsesClientResponse(aioresponses_core.ClientResponse):
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         """Initialize and provide a stream_writer for aiohttp 3.14+."""
-        kwargs.setdefault("stream_writer", AIOHTTP_STREAM_WRITER)
+        if AIOHTTP_REQUIRES_STREAM_WRITER:
+            kwargs.setdefault("stream_writer", AIOHTTP_STREAM_WRITER_COMPAT)
         super().__init__(*args, **kwargs)
 
 
-@pytest.fixture(scope="session", autouse=True)
-def setup_aioresponses_aiohttp_compat() -> Any:
+@pytest.fixture(autouse=True)
+def patch_aioresponses_for_aiohttp_compat(
+    monkeypatch: pytest.MonkeyPatch,
+) -> Generator[None, None, None]:
     """Patch aioresponses ClientResponse for aiohttp compatibility in tests."""
     if not AIOHTTP_REQUIRES_STREAM_WRITER:
         yield
         return
 
-    monkeypatch = pytest.MonkeyPatch()
-    monkeypatch.setattr(aioresponses_core, "ClientResponse", AioresponsesClientResponse)
+    monkeypatch.setattr(
+        aioresponses_core,
+        "ClientResponse",
+        AioresponsesClientResponse,
+    )
     yield
-    monkeypatch.undo()
 
 
 def load_fixture(filename: str) -> Any:
